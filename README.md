@@ -1,39 +1,93 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# date_time
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
+Package to work with Date & Time in separation and with its ranges.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+This project will be useful for projects that are related to booking.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+* Only Date comparison
+* Only Time comparison
+* Find crossing of dates
+* Find crossing of times in the day
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+1. Add dependency
+
+```yml
+dependencies:
+  date_time: <newest>
+```
+
+2. Import the dependency
+
+```dart
+import 'package:date_time/date_time.dart';
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+Please, check ([examples.dart](./examples/dates.dart)) folder for more advanced examples.
+
+### Date
 
 ```dart
-const like = 'sample';
+given('DateTime', () {
+  final dateTime = DateTime(2020, 11, 30, 14, 33, 17);
+
+  then('date should be equal to', () {
+    dateTime.date.should.be(Date(2020, 11, 30));
+  });
+
+  then('time should be equal to', () {
+    dateTime.time.should.be(Time(14, mins: 33, secs: 17));
+  });
+});
 ```
 
-## Additional information
+### DateRange
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+```dart
+final range = DateRange(
+  const Date(2021, 1, 1),
+  const Date(2021, 12, 31),
+);
+
+test('should be valid', () {
+  range.isValid.should.beTrue();
+});
+```
+
+### Time
+
+```dart
+final time2 = time.addMinutes(30);
+final isTime2After = time2 > time;
+final isTime2After2 = time2.isAfter(time);
+print('Is time2 after: $isTime2After');
+```
+
+### TimeRange
+
+```dart
+// TimeRange crossing
+final timeRange = TimeRange(Time.now, Time.now.addHours(6));
+final timeRange2 = TimeRange(Time.now.addHours(3), Time.now.addHours(9));
+
+final isCrossing = timeRange.isCross(timeRange2);
+print('Time ranges are crossing: $isCrossing');
+```
+
+## Contributing
+
+We accept the following contributions:
+
+* New features
+* Improving documentation
+* Reporting issues
+* Fixing bugs
+
+## Maintainers
+
+* [Andrew Piterov](mailto:piterov1990@gmail.com?subject=[GitHub]%20Source%20Dart%20date_time)
