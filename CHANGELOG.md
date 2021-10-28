@@ -1,3 +1,7 @@
+## 0.0.2
+
+* [Add] examples
+
 ## 0.0.1
 
 * [Add] `Date` and `DateRange` classes

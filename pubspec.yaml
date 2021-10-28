@@ -1,6 +1,6 @@
 name: date_time
 description: Package to work with Date & Time in separation and with its Ranges.
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/AndrewPiterov/date_time
 
 environment:

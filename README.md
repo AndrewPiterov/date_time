@@ -28,7 +28,7 @@ import 'package:date_time/date_time.dart';
 
 ## Usage
 
-Please, check ([examples.dart](./examples/dates.dart)) folder for more advanced examples.
+Please, check ([examples](./example/dates.dart)) folder for more advanced examples.
 
 ### Date
 
