@@ -112,7 +112,10 @@ class Time {
   }
 
   /// Now
-  static Time get now => Time(DateTime.now().hour, mins: DateTime.now().minute);
+  static Time get now => Time(
+        DateTime.now().hour,
+        mins: DateTime.now().minute,
+      );
 
   // static Time from(TimeOfDay time) =>
   //     Time(hour: time.hour, minute: time.minute);
@@ -134,11 +137,24 @@ class Time {
     return Time(h, mins: m);
   }
 
-  // factory Time.fromMinutes(int minutes) {
-  //   final h = minutes ~/ 60;
-  //   final m = minutes % 60;
-  //   return Time(h, mins: m);
-  // }
+  /// Round the time to next nearest
+  Time roundToTheNearestMin(int stepInMin, {bool back = false}) {
+    final m = mins;
+    final r = m % stepInMin;
+
+    if (r == 0) {
+      return this;
+    }
+
+    if (back) {
+      // final delta = stepInMin - r;
+      // final x = m + delta - stepInMin;
+      return addMinutes(-r);
+    }
+
+    final delta = stepInMin - r;
+    return addMinutes(delta);
+  }
 
   // @override
   ///

@@ -1,3 +1,7 @@
+## 0.3.3
+
+[Add] `roundToTheNearestMin` for `Time`
+
 ## 0.2.2
 
 [Fix] `addDays` of `Date`
