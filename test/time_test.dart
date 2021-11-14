@@ -1,3 +1,4 @@
+// ignore_for_file: prefer_const_constructors
 import 'package:date_time/date_time.dart';
 import 'package:shouldly/shouldly.dart';
 import 'package:test/scaffolding.dart';

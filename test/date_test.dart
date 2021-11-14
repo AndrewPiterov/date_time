@@ -88,4 +88,44 @@ void main() {
       });
     });
   });
+
+  given('Date', () {
+    const date = Date(2021, 4, 1);
+
+    then('add 1 day', () {
+      final res = date.addDays(1);
+
+      res.day.should.be(2);
+      res.month.should.be(4);
+      res.year.should.be(2021);
+    });
+
+    then('minus 1 day', () {
+      final res = date.addDays(-1);
+
+      res.day.should.be(31);
+      res.month.should.be(3);
+      res.year.should.be(2021);
+    });
+  });
+
+  given('Date', () {
+    const date = Date(2021, 4, 1);
+
+    then('add 1 day duration', () {
+      final res = date.add(const Duration(hours: 24));
+
+      res.day.should.be(2);
+      res.month.should.be(4);
+      res.year.should.be(2021);
+    });
+
+    then('minus 1 day duration', () {
+      final res = date.add(const Duration(hours: -24));
+
+      res.day.should.be(31);
+      res.month.should.be(3);
+      res.year.should.be(2021);
+    });
+  });
 }

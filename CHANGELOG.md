@@ -1,3 +1,7 @@
+## 0.2.2
+
+[Fix] `addDays` of `Date`
+
 ## 0.1.2
 
 * [Add] `upTo` for `TimeRange`

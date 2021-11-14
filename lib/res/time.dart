@@ -33,7 +33,7 @@ class Time {
 
   static Time corrected({required int hour}) {
     if (hour < 0) {
-      return Time(0);
+      return const Time(0);
     }
 
     if (hour < 24) {
@@ -41,7 +41,7 @@ class Time {
     }
 
     if (hour == 24) {
-      return Time(0);
+      return const Time(0);
     }
 
     final r = hour % 24;
@@ -52,7 +52,7 @@ class Time {
 
   static Time fromStr(String? str) {
     if (str == null || str.isEmpty) {
-      return Time(0);
+      return const Time(0);
     }
 
     final arr = str.split(':');

@@ -27,7 +27,7 @@ class Date {
   }
 
   Date addDays(int amount) {
-    final t = asDateTime.add(const Duration(hours: 24));
+    final t = asDateTime.add(Duration(hours: amount * 24));
     return Date(t.year, t.month, t.day);
   }
 
