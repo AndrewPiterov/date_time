@@ -1,3 +1,9 @@
+## 0.1.2
+
+* [Add] `upTo` for `TimeRange`
+* [Add] `format` for `Time`
+* [Rename] `isInRange` to `contains`
+
 ## 0.0.2
 
 * [Add] examples

@@ -4,10 +4,10 @@ import 'package:quiver/core.dart';
 ///
 class DateRange {
   /// Initialize `DateRange`
-  DateRange(this.start, this.end);
+  const DateRange(this.start, this.end);
 
-  Date start;
-  Date end;
+  final Date start;
+  final Date end;
 
   bool get isValid => start < end;
 

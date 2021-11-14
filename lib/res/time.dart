@@ -176,6 +176,22 @@ class Time {
         secs.hashCode,
       );
 
+  /// Allowed formats `HH:mm:ss` and `HH:mm`
+  String format([String format = 'HH:mm:ss']) {
+    if (format == 'HH:mm:ss') {
+      return toString();
+    }
+
+    if (format == 'HH:mm') {
+      return [
+        hours.toString().padLeft(2, '0'),
+        mins.toString().padLeft(2, '0'),
+      ].join(':');
+    }
+
+    return toString();
+  }
+
   @override
   String toString() => [
         hours.toString().padLeft(2, '0'),

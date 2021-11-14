@@ -1,12 +1,13 @@
+import 'package:date_time/date_time.dart';
 import 'package:date_time/res/time.dart';
 
 class TimeRange {
-  Time start;
-  Time end;
+  const TimeRange(this.start, this.end);
 
-  TimeRange(this.start, this.end);
+  final Time start;
+  final Time end;
 
-  get durationInMinutes => end.inMins - start.inMins;
+  int get durationInMinutes => end.inMins - start.inMins;
 
   bool get isValid {
     return end.isAfter(start);
@@ -17,7 +18,14 @@ class TimeRange {
         (start.hours == other.start.hours && start.mins <= other.start.mins);
   }
 
-  bool isInRange(Time checkTime) {
+  TimeRange upTo(Time end) {
+    if (start >= end) {
+      throw DateTimeError('End can\'t be early than Start');
+    }
+    return TimeRange(start, end);
+  }
+
+  bool contains(Time checkTime) {
     final inside = start <= checkTime && checkTime <= end;
     return inside;
   }
