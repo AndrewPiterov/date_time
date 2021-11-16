@@ -1,17 +1,15 @@
 name: date_time
-description: Package to work with Date & Time in separation and with its Ranges.
+description: Package to work with **Date** & **Time** in separation and with its Ranges.
 version: 0.4.4
 homepage: https://github.com/AndrewPiterov/date_time
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=1.17.0"
 
 dependencies:
   quiver: ^3.0.1+1
 
 dev_dependencies:
-
   given_when_then_unit_test: ^0.0.1
   lint: ^1.7.2
   shouldly: ^0.2.4

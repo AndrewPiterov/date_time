@@ -14,6 +14,7 @@ This project will be useful for projects that are related to booking.
 
 * Only Date comparison
 * Only Time comparison
+* Overflowed Time with keeping days
 * Find crossing of dates
 * Find crossing of times in the day
 
