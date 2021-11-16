@@ -1,3 +1,7 @@
+## 0.4.5
+
+* [Add] arithmetic operators
+
 ## 0.4.4
 
 * [Add] `OverflowedTime`

@@ -153,4 +153,147 @@ void main() {
       });
     });
   });
+
+  test('Time in seconds', () {
+    const time = Time(1, mins: 5, secs: 20);
+    time.inSeconds.should.be(3920);
+  });
+
+  test('Add two times', () {
+    const time = Time(1, mins: 15, secs: 13);
+    const anotherTime = Time(1, mins: 5, secs: 20);
+
+    final res = time + anotherTime;
+
+    res.inSeconds.should.be(8433);
+    res.hours.should.be(2);
+    res.mins.should.be(20);
+    res.secs.should.be(33);
+  });
+
+  test('Add two times', () {
+    const time = Time(1, mins: 5, secs: 20);
+    const anotherTime = Time(1, mins: 5, secs: 20);
+
+    final res = time + anotherTime;
+
+    res.inSeconds.should.be(7840);
+    res.hours.should.be(2);
+    res.mins.should.be(10);
+    res.secs.should.be(40);
+  });
+
+  test('Add two times with oveflow', () {
+    const time = Time(20, mins: 30, secs: 20);
+    const anotherTime = Time(9, mins: 31, secs: 15);
+
+    final res = time + anotherTime;
+
+    res.should.beOfType<OverflowedTime>();
+    res.asOverflowed.days.should.be(1);
+    res.inSeconds.should.be(108095);
+    res.hours.should.be(6);
+    res.mins.should.be(1);
+    res.secs.should.be(35);
+  });
+
+  test('Multiple time by 3', () {
+    const time = Time(1, mins: 2, secs: 3);
+
+    final res = time * 3;
+
+    res.hours.should.be(3);
+    res.mins.should.be(6);
+    res.secs.should.be(9);
+  });
+
+  test('Multiple time by 2.5', () {
+    const time = Time(2, mins: 10, secs: 20);
+
+    final res = time * 2.5;
+
+    res.hours.should.be(5);
+    res.mins.should.be(25);
+    res.secs.should.be(50);
+  });
+
+  test('Multiple time by 3 (2)', () {
+    const time = Time(8);
+
+    final res = time * 3;
+    res.should.beOfType<OverflowedTime>();
+    res.hours.should.be(0);
+    res.mins.should.be(0);
+    res.secs.should.be(0);
+  });
+
+  test('Devide time by 2', () {
+    const time = Time(2, mins: 10, secs: 20);
+
+    final res = time / 2;
+
+    res.hours.should.be(1);
+    res.mins.should.be(5);
+    res.secs.should.be(10);
+  });
+
+  test('Subtract two times', () {
+    const time = Time(1, mins: 15, secs: 13);
+    const anotherTime = Time(1, mins: 5, secs: 20);
+
+    final res = time - anotherTime;
+
+    res.hours.should.be(0);
+    res.mins.should.be(9);
+    res.secs.should.be(53);
+    res.inSeconds.should.be(593);
+  });
+
+  test('Subtract two times when second time is greater', () {
+    const time = Time(1, mins: 15);
+    const anotherTime = Time(1, mins: 20);
+
+    final res = time - anotherTime;
+
+    res.hours.should.be(0);
+    res.mins.should.be(0);
+    res.secs.should.be(0);
+    res.inSeconds.should.be(0);
+  });
+
+  group('time', () {
+    const time = Time(1, mins: 15, secs: 13);
+
+    then('total seconds should be 4513', () {
+      time.inSeconds.should.be(4513);
+    });
+
+    when('add another time', () {
+      const anotherTime = Time(1, mins: 5, secs: 20);
+      late Time res;
+
+      then('total seconds of another time should be 4513', () {
+        anotherTime.inSeconds.should.be(3920);
+      });
+
+      before(() {
+        res = time + anotherTime;
+      });
+
+      then('should summarize times', () {
+        res.hours.should.be(2);
+        res.mins.should.be(20);
+        res.secs.should.be(33);
+      });
+    });
+  });
+
+  test('non oveflowed time', () {
+    const time = Time(23, mins: 59, secs: 59);
+    final res = time.asOverflowed;
+    res.days.should.be(0);
+    res.hours.should.be(23);
+    res.mins.should.be(59);
+    res.secs.should.be(59);
+  });
 }

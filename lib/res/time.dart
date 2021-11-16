@@ -15,9 +15,32 @@ class Time {
   })  : assert(hours >= 0),
         assert(hours < 24),
         assert(mins >= 0),
-        assert(mins < 60),
+        assert(mins <= 60),
         assert(secs >= 0),
-        assert(secs < 60);
+        assert(secs <= 60);
+
+  ///
+  factory Time.fromMinutes(int amount) {
+    return Time.fromSeconds(amount * 60);
+  }
+
+  ///
+  factory Time.fromSeconds(int amount) {
+    final isOveflowed = amount >= secondsInDay;
+    if (isOveflowed) {
+      final days = (amount / secondsInDay).floor();
+      final secs = amount % secondsInDay;
+      return Time.fromSeconds(secs).oveflowBy(days);
+    }
+
+    const oneHourInSecs = 60 * 60;
+    final h = (amount / oneHourInSecs).floor();
+    final res = amount - (h * oneHourInSecs);
+
+    final m = (res / 60).floor();
+    final s = res % 60;
+    return Time(h, mins: m, secs: s);
+  }
 
   /// Represents hours
   final int hours;
@@ -31,6 +54,9 @@ class Time {
   /// Represents the `Time` in minutes
   int get inMins => hours * 60 + mins;
 
+  /// Represents the `Time` in seconds
+  int get inSeconds => inMins * 60 + secs;
+
   /// Convert to `OverflowedTime` representation
   OverflowedTime get asOverflowed {
     if (this is OverflowedTime) {
@@ -40,8 +66,14 @@ class Time {
     return OverflowedTime(hours: hours, days: 0, min: mins, sec: secs);
   }
 
-  static const _minutesInDay = 24 * 60;
-  static const _defaultSeparator = ':';
+  ///
+  static const minutesInDay = 24 * 60;
+
+  ///
+  static const secondsInDay = 24 * 60 * 60;
+
+  ///
+  static const defaultSeparator = ':';
 
   /// Tries to onvert a string to `Time`
   ///
@@ -96,25 +128,6 @@ class Time {
     );
   }
 
-  ///
-  factory Time.fromMinutes(int amount) {
-    final isOveflowed = amount > _minutesInDay;
-    if (isOveflowed) {
-      final days = (amount / _minutesInDay).floor();
-      final mins = amount % _minutesInDay;
-      return Time.fromMinutes(mins).oveflowBy(days);
-    }
-
-    var h = (amount / 60).floor();
-
-    if (h == 24) {
-      h = 0;
-    }
-
-    final m = amount % 60;
-    return Time(h, mins: m);
-  }
-
   /// Round the time to next nearest
   Time roundToTheNearestMin(int stepInMin, {bool back = false}) {
     final m = mins;
@@ -144,6 +157,53 @@ class Time {
     );
   }
 
+  @override
+  bool operator ==(Object other) =>
+      other is Time &&
+      other.hours == hours &&
+      other.mins == mins &&
+      other.secs == secs;
+
+  @override
+  int get hashCode => hash3(
+        hours.hashCode,
+        mins.hashCode,
+        secs.hashCode,
+      );
+
+  @override
+  String toString() => [
+        hours.toString().padLeft(2, '0'),
+        mins.toString().padLeft(2, '0'),
+        secs.toString().padLeft(2, '0'),
+      ].join(defaultSeparator);
+}
+
+///
+extension TimeStringFormatingExtensions on Time {
+  /// Allowed formats `HH:mm:ss` and `HH:mm`
+  String format([String format = 'HH:mm:ss']) {
+    if (format == 'HH:mm:ss') {
+      return toString();
+    }
+
+    if (format == 'HH:mm') {
+      return [
+        hours.toString().padLeft(2, '0'),
+        mins.toString().padLeft(2, '0'),
+      ].join(':');
+    }
+
+    return toString();
+  }
+
+  ///
+  String toStringWithSeparator(String separator) =>
+      toString().replaceAll(Time.defaultSeparator, separator);
+}
+
+///
+extension TimeComparisonExtensions on Time {
   ///
   bool isAfter(Time time, {bool orSame = false}) {
     return orSame ? this >= time : this > time;
@@ -175,45 +235,31 @@ class Time {
   bool operator >(Time other) {
     return inMins > other.inMins;
   }
+}
 
-  @override
-  bool operator ==(Object other) =>
-      other is Time &&
-      other.hours == hours &&
-      other.mins == mins &&
-      other.secs == secs;
-
-  @override
-  int get hashCode => hash3(
-        hours.hashCode,
-        mins.hashCode,
-        secs.hashCode,
-      );
-
-  /// Allowed formats `HH:mm:ss` and `HH:mm`
-  String format([String format = 'HH:mm:ss']) {
-    if (format == 'HH:mm:ss') {
-      return toString();
-    }
-
-    if (format == 'HH:mm') {
-      return [
-        hours.toString().padLeft(2, '0'),
-        mins.toString().padLeft(2, '0'),
-      ].join(':');
-    }
-
-    return toString();
+///
+extension TimeArithmeticExtensions on Time {
+  ///
+  Time operator +(Time other) {
+    return Time.fromSeconds(inSeconds + other.inSeconds);
   }
 
   ///
-  String toStringWithSeparator(String separator) =>
-      toString().replaceAll(_defaultSeparator, separator);
+  Time operator -(Time other) {
+    if (other.inSeconds >= inSeconds) {
+      return const Time(0);
+    }
 
-  @override
-  String toString() => [
-        hours.toString().padLeft(2, '0'),
-        mins.toString().padLeft(2, '0'),
-        secs.toString().padLeft(2, '0'),
-      ].join(_defaultSeparator);
+    return Time.fromSeconds(inSeconds - other.inSeconds);
+  }
+
+  ///
+  Time operator *(num times) {
+    return Time.fromSeconds((inSeconds * times).ceil());
+  }
+
+  ///
+  Time operator /(num times) {
+    return Time.fromSeconds((inSeconds / times).floor());
+  }
 }
