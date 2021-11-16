@@ -1,6 +1,12 @@
+[![pub package](https://img.shields.io/pub/v/date_time.svg?label=date_time&color=blue)](https://pub.dev/packages/date_time)
+[![codecov](https://codecov.io/gh/AndrewPiterov/date_time/branch/dev/graph/badge.svg?token=VM9LTJXGQS)](https://codecov.io/gh/AndrewPiterov/date_time)
+[![likes](https://badges.bar/date_time/likes)](https://pub.dev/packages/date_time/score)
+[![style: lint](https://img.shields.io/badge/style-lint-4BC0F5.svg)](https://pub.dev/packages/lint)
+[![Dart](https://github.com/AndrewPiterov/date_time/actions/workflows/dart.yml/badge.svg)](https://github.com/AndrewPiterov/date_time/actions/workflows/dart.yml)
+
 # date_time
 
-Package to work with Date & Time in separation and with its ranges.
+Package to work with **Date** & **Time** in separation and with its ranges.
 
 This project will be useful for projects that are related to booking.
 
