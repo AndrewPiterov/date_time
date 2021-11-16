@@ -1,3 +1,8 @@
+## 0.4.4
+
+* [Add] `OverflowedTime`
+* [Add] more tests
+
 ## 0.3.3
 
 [Add] `roundToTheNearestMin` for `Time`

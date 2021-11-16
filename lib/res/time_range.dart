@@ -81,4 +81,7 @@ class TimeRange {
     result = 37 * result + end.hashCode;
     return result;
   }
+
+  @override
+  String toString() => '[${start}-${end}]';
 }

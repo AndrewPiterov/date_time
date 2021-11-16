@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:date_time/date_time.dart';
+import 'package:date_time/res/overflowed_time.dart';
 import 'package:given_when_then_unit_test/given_when_then_unit_test.dart';
 import 'package:shouldly/shouldly.dart';
 import 'package:test/scaffolding.dart';
@@ -25,6 +26,76 @@ void main() {
 
     final res = time2 >= time;
     res.should.beTrue();
+  });
+
+  test('toString', () {
+    const time = Time(2, mins: 1, secs: 7);
+    time.toString().should.be('02:01:07');
+  });
+
+  test('toString with separator', () {
+    const time = Time(2, mins: 1, secs: 7);
+    time.toStringWithSeparator('-').should.be('02-01-07');
+  });
+
+  test('as overflowed', () {
+    final time = Time(20).addHours(5);
+    time.asOverflowed.days.should.be(1);
+  });
+
+  given('time', () {
+    const time = Time(20);
+
+    when('add hours', () {
+      then('hours should be summarize', () {
+        time.addHours(2).should.be(Time(22));
+      });
+    });
+
+    when('add more hours for next day', () {
+      late Time res;
+
+      before(() {
+        res = time.addHours(5);
+      });
+
+      then('type shoulde oveflowed', () {
+        res.should.beOfType<OverflowedTime>();
+      });
+
+      then('shoulde be oveflowed by 1', () {
+        (res as OverflowedTime).days.should.be(1);
+      });
+
+      then('hours shoudld be corrected', () {
+        res.should.be(Time(1));
+      });
+    });
+  });
+
+  group('comparison', () {
+    const time = Time(1);
+    const time1 = Time(1);
+    const time2 = Time(2);
+    test('not equal', () {
+      (time != time2).should.beTrue();
+    });
+
+    test('before', () {
+      (time < time2).should.beTrue();
+    });
+
+    test('after', () {
+      (time2 > time).should.beTrue();
+    });
+
+    test('before or equal', () {
+      (time1 <= time1).should.beTrue();
+    });
+
+    test('after or equal', () {
+      (time1 >= time1).should.beTrue();
+    });
   });
 
   group('roundToTheNearestMin', () {

@@ -68,6 +68,18 @@ final isTime2After2 = time2.isAfter(time);
 print('Is time2 after: $isTime2After');
 ```
 
+### Overflowed Time
+
+to keep days
+
+```dart
+final time = Time(20).addHours(5);
+
+print(time is OverflowedTime); // prints `true`
+print(time.asOverflowed.days); // prints `1`
+
+```
+
 ### TimeRange
 
 ```dart

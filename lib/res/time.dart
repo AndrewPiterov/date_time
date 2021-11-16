@@ -1,15 +1,10 @@
+import 'package:date_time/date_time.dart';
 import 'package:quiver/core.dart';
 
 /// Time object
 ///
 /// `Time(11,30,45)` is 11:30:45
 class Time {
-  final int hours;
-  final int mins;
-  final int secs;
-
-  int get inMins => hours * 60 + mins;
-
   /// initialize `Time` object
   ///
   /// `Time(11,30,45)` for 11 hours 30 minutes 45 seconds
@@ -24,113 +19,96 @@ class Time {
         assert(secs >= 0),
         assert(secs < 60);
 
-  String toStringWithSeparator(String separator) =>
-      toString().replaceAll(':', separator);
+  /// Represents hours
+  final int hours;
 
-  // get isEmpty => label.isEmpty;
+  /// Represents minutes
+  final int mins;
 
-  // get label => "$hours:${mins < 10 ? '0$mins' : mins}";
+  /// Represents seconds
+  final int secs;
 
-  static Time corrected({required int hour}) {
-    if (hour < 0) {
-      return const Time(0);
+  /// Represents the `Time` in minutes
+  int get inMins => hours * 60 + mins;
+
+  /// Convert to `OverflowedTime` representation
+  OverflowedTime get asOverflowed {
+    if (this is OverflowedTime) {
+      return this as OverflowedTime;
     }
 
-    if (hour < 24) {
-      return Time(hour);
-    }
-
-    if (hour == 24) {
-      return const Time(0);
-    }
-
-    final r = hour % 24;
-    return Time(r);
+    return OverflowedTime(hours: hours, days: 0, min: mins, sec: secs);
   }
 
-  // TimeOfDay get asDayOfTime => TimeOfDay(hour: hour, minute: minute);
+  static const _minutesInDay = 24 * 60;
+  static const _defaultSeparator = ':';
 
-  static Time fromStr(String? str) {
-    if (str == null || str.isEmpty) {
-      return const Time(0);
+  /// Tries to onvert a string to `Time`
+  ///
+  /// [str] should be separated wit `:`, eg: '23:30:21' or `3:17`
+  static Time? fromStr(String? str) {
+    try {
+      if (str == null || str.isEmpty) {
+        return null;
+      }
+
+      final arr = str.split(':');
+
+      final h = arr[0];
+      final String m = arr.length > 1 ? arr[1] : '0';
+
+      return Time(int.parse(h), mins: int.parse(m));
+    } catch (e) {
+      return null;
     }
-
-    final arr = str.split(':');
-
-    final h = arr[0];
-    final String m = arr.length > 1 ? arr[1] : '0';
-
-    return Time(int.parse(h), mins: int.parse(m));
   }
 
+  /// Add hours and may be `Oveflowed`
   Time addHours(int amount) {
     final additional = amount * 60;
     final totalMinutes = inMins + additional;
     return Time.fromMinutes(totalMinutes);
   }
 
+  /// Add minutes and may be `Oveflowed`
   Time addMinutes(int amount) {
     final totalMinutes = inMins + amount;
     return Time.fromMinutes(totalMinutes);
   }
 
-  bool isAfter(Time? time, {bool orSame = false}) {
-    if (time == null) {
-      throw 'You could not compare null with Time!';
-    }
-
-    if (hours > time.hours) {
-      return true;
-    }
-
-    if (hours < time.hours) {
-      return false;
-    }
-
-    // hours are same - compare minutes
-    if (mins > time.mins) {
-      return true;
-    }
-
-    if (mins < time.mins) {
-      return false;
-    }
-
-    return orSame;
-  }
-
-  bool timeLessThen(Time? b) {
-    if (b == null) {
-      return false;
-    }
-
-    return hours < b.hours || (hours == b.hours && mins < b.mins);
-  }
-
-  bool timeGreaterThen(Time b) {
-    return b.timeLessThen(this);
-  }
-
   /// Now
-  static Time get now => Time(
-        DateTime.now().hour,
-        mins: DateTime.now().minute,
-      );
+  static Time get now {
+    final dt = DateTime.now();
+    return Time(
+      dt.hour,
+      mins: dt.minute,
+      secs: dt.second,
+    );
+  }
 
-  // static Time from(TimeOfDay time) =>
-  //     Time(hour: time.hour, minute: time.minute);
+  /// UTC Now
+  static Time get utcNow {
+    final dt = DateTime.now().toUtc();
+    return Time(
+      dt.hour,
+      mins: dt.minute,
+      secs: dt.second,
+    );
+  }
 
   ///
   factory Time.fromMinutes(int amount) {
+    final isOveflowed = amount > _minutesInDay;
+    if (isOveflowed) {
+      final days = (amount / _minutesInDay).floor();
+      final mins = amount % _minutesInDay;
+      return Time.fromMinutes(mins).oveflowBy(days);
+    }
+
     var h = (amount / 60).floor();
 
     if (h == 24) {
       h = 0;
-    }
-
-    if (h > 24) {
-      final x = (h / 24).floor();
-      h = x;
     }
 
     final m = amount % 60;
@@ -154,6 +132,26 @@ class Time {
 
     final delta = stepInMin - r;
     return addMinutes(delta);
+  }
+
+  /// Keep days
+  OverflowedTime oveflowBy(int days) {
+    return OverflowedTime(
+      hours: hours,
+      days: days,
+      min: mins,
+      sec: secs,
+    );
+  }
+
+  ///
+  bool isAfter(Time time, {bool orSame = false}) {
+    return orSame ? this >= time : this > time;
+  }
+
+  ///
+  bool isBefore(Time time, {bool orSame = false}) {
+    return orSame ? this <= time : this < time;
   }
 
   // @override
@@ -208,10 +206,14 @@ class Time {
     return toString();
   }
 
+  ///
+  String toStringWithSeparator(String separator) =>
+      toString().replaceAll(_defaultSeparator, separator);
+
   @override
   String toString() => [
         hours.toString().padLeft(2, '0'),
         mins.toString().padLeft(2, '0'),
         secs.toString().padLeft(2, '0'),
-      ].join(':');
+      ].join(_defaultSeparator);
 }
