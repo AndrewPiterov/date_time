@@ -2,6 +2,10 @@ import 'package:quiver/core.dart';
 
 /// Date object
 class Date {
+  final int day;
+  final int month;
+  final int year;
+
   /// Initialize `Date` object
   const Date(
     this.year,
@@ -9,9 +13,11 @@ class Date {
     this.day,
   );
 
-  final int day;
-  final int month;
-  final int year;
+  ///
+  Date.from(DateTime dt)
+      : year = dt.year,
+        month = dt.month,
+        day = dt.day;
 
   String get withoutSeparator => toString().replaceAll('-', '');
   String withSeparator(String separator) =>
@@ -69,14 +75,10 @@ class Date {
     return year == today.year && month == today.month && day == today.day;
   }
 
-  static Date get today => from(DateTime.now());
+  static Date get today => Date.from(DateTime.now());
 
   static Date get tomorrow =>
-      from(DateTime.now().add(const Duration(hours: 24)));
-
-  static Date from(DateTime dt) {
-    return Date(dt.year, dt.month, dt.day);
-  }
+      Date.from(DateTime.now().add(const Duration(hours: 24)));
 
   bool operator >(Date other) {
     return isAfter(other);
