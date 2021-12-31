@@ -31,19 +31,11 @@ class Date {
     return Date(t.year, t.month, t.day);
   }
 
-  bool isSame(Date? date) {
-    if (date == null) {
-      throw 'Date to compare is null!';
-    }
-
+  bool isSame(Date date) {
     return year == date.year && month == date.month && day == date.day;
   }
 
-  bool isAfter(Date? after, {bool orSame = false}) {
-    if (after == null) {
-      throw 'Date to compare is null!';
-    }
-
+  bool isAfter(Date after, {bool orSame = false}) {
     if (year < after.year) {
       return false;
     }
@@ -82,11 +74,7 @@ class Date {
   static Date get tomorrow =>
       from(DateTime.now().add(const Duration(hours: 24)));
 
-  static Date from(DateTime? dt) {
-    if (dt == null) {
-      throw 'DateTime is null';
-    }
-
+  static Date from(DateTime dt) {
     return Date(dt.year, dt.month, dt.day);
   }
 
