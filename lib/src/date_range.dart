@@ -1,5 +1,6 @@
-import 'package:date_time/res/date.dart';
 import 'package:quiver/core.dart';
+
+import 'date.dart';
 
 ///
 class DateRange {

@@ -1,5 +1,5 @@
-import 'package:date_time/res/date.dart';
-import 'package:date_time/res/time.dart';
+import 'date.dart';
+import 'time.dart';
 
 extension DateTimeExtensions on DateTime {
   Date get date => Date(year, month, day);
