@@ -1,9 +1,16 @@
+import 'package:date_time/src/extensions.dart';
+import 'package:intl/intl.dart';
 import 'package:quiver/core.dart';
 
 /// Date object
 class Date {
+  /// Day
   final int day;
+
+  /// Month
   final int month;
+
+  /// Year
   final int year;
 
   /// Initialize `Date` object
@@ -19,88 +26,280 @@ class Date {
         month = dt.month,
         day = dt.day;
 
-  String get withoutSeparator => toString().replaceAll('-', '');
-  String withSeparator(String separator) =>
-      toString().replaceAll('-', separator);
+  /// Today
+  factory Date.today() => Date.from(DateTime.now());
 
+  /// Tomorrow
+  factory Date.tomorrow() => Date.today().nextDay;
+
+  /// Tomorrow
+  factory Date.yesterday() => Date.today().previousDay;
+
+  ///
+  String get withoutSeparator => DateFormat('yyyyMMdd').format(asDateTime);
+
+  ///
+  String withSeparator(String separator) =>
+      DateFormat('yyyy${separator}MM${separator}dd').format(asDateTime);
+
+  ///
   int get weekday => DateTime(year, month, day).weekday;
 
+  ///
   DateTime get asDateTime => DateTime(year, month, day);
 
+  ///
   Date add(Duration duration) {
     final t = asDateTime.add(duration);
     return Date(t.year, t.month, t.day);
   }
 
+  /// Substract a [Duration] to this date
+  Date subtract(Duration duration) => add(Duration.zero - duration);
+
+  ///
   Date addDays(int amount) {
     final t = asDateTime.add(Duration(hours: amount * 24));
     return Date(t.year, t.month, t.day);
   }
 
-  bool isSame(Date date) {
-    return year == date.year && month == date.month && day == date.day;
-  }
+  /// Add a certain amount of weeks to this date
+  Date addWeeks(int amount) => addDays(amount * 7);
 
-  bool isAfter(Date after, {bool orSame = false}) {
-    if (year < after.year) {
-      return false;
+  /// Add a certain amount of months to this date
+  Date addMonths(int amount) => setMonth(month + amount);
+
+  /// Add a certain amount of quarters to this date
+  Date addQuarters(int amount) => addMonths(amount * 3);
+
+  /// Add a certain amount of years to this date
+  Date addYears(int amount) => setYear(year + amount);
+
+  /// Subtracts an amout of days from this [Date]
+  Date subDays(int amount) => addDays(-amount);
+
+  /// Subtracts an amout of months from this [Date]
+  Date subMonths(int amount) => addMonths(-amount);
+
+  /// Add a certain amount of quarters to this date
+  Date subQuarters(int amount) => addQuarters(-amount);
+
+  // DateTime subWeeks(amount)
+  /// Subtracts an amout of years from this [Date]
+  Date subYears(int amount) => addYears(-amount);
+
+  ///
+  Date setYear(int year) => DateTime(year, month, day).date;
+
+  ///
+  Date setMonth(int month) => DateTime(year, month, day).date;
+
+  ///
+  Date setDay(int day) => DateTime(year, month, day).date;
+
+  ///
+  bool isAfter(Date other) => asDateTime.isAfter(other.asDateTime);
+
+  ///
+  bool isBefore(Date other) => asDateTime.isBefore(other.asDateTime);
+
+  /// Return true if other [isEqual] or [isAfter] to this date
+  bool isSameOrAfter(Date other) => this == other || isAfter(other);
+
+  /// Return true if other [isEqual] or [isBefore] to this date
+  bool isSameOrBefore(Date other) => this == other || isBefore(other);
+
+  /// The day after this [Date]
+  Date get nextDay => addDays(1);
+
+  /// The day previous this [Date]
+  Date get previousDay => addDays(-1);
+
+  /// The month after this [Date]
+  Date get nextMonth => setMonth(month + 1);
+
+  /// The month previous this [Date]
+  Date get previousMonth => setMonth(month - 1);
+
+  /// The year after this [Date]
+  Date get nextYear => setYear(year + 1);
+
+  /// The year previous this [Date]
+  Date get previousYear => setYear(year - 1);
+
+  /// The week after this [Date]
+  Date get nextWeek => addDays(7);
+
+  /// The week previous this [Date]
+  Date get previousWeek => subDays(7);
+
+  /// Get a [Date] representing start of week of this [Date] in local time.
+  Date get startOfWeek => weekday == DateTime.sunday ? this : subDays(weekday);
+
+  /// Get a [Date] representing start of week (ISO week) of this [Date] in local time.
+  Date get startOfISOWeek => subDays(weekday - 1);
+
+  /// Get a [Date] representing start of week of this [Date] in local time.
+  Date get startOfWeekend => subDays(DateTime.saturday - weekday);
+
+  /// Get a [Date] representing start of month of this [Date] in local time.
+  Date get startOfMonth => setDay(1);
+
+  /// Get a [Date] representing start of year of this [Date] in local time.
+  Date get startOfYear => DateTime(year, DateTime.january, 1).date;
+
+  /// Return the end of ISO week for this date. The result will be in the local timezone.
+  Date get endOfISOWeek => startOfISOWeek.addDays(6);
+
+  /// Return the end of the week for this date. The result will be in the local timezone.
+  Date get endOfWeek => startOfWeek.addDays(6);
+
+  /// Get a [Date] representing end of weekend of this [Date] in local time.
+  Date get endOfWeekend => startOfWeekend.addDays(1);
+
+  // Return the end of the year for this date. The result will be in the local timezone.
+  Date get endOfYear => Date(year, DateTime.december, 1).endOfMonth;
+
+  /// Return the end of the month for this date. The result will be in the local timezone.
+  Date get endOfMonth => Date(year, month + 1, 1).subDays(1);
+
+  /// Quarter 1-4
+  int get quarter => (month + 2) ~/ 3;
+
+  /// Quarter start month
+  int get quarterStartMonth => quarterEndMonth - 2;
+
+  /// Quarter end month
+  int get quarterEndMonth => 3 * quarter;
+
+  /// Start of quarter
+  Date get startOfQuarter => Date(year, quarterStartMonth, 1);
+
+  /// End of quarter
+  Date get endOfQuarter => Date(year, quarterEndMonth, 1).endOfMonth;
+
+  /// Get the week index
+  int get getWeek => addDays(1).getISOWeek;
+
+  /// Get the ISO week index
+  int get getISOWeek {
+    final woy = (_ordinalDate - weekday + 10) ~/ 7;
+
+    // If the week number equals zero, it means that the given date belongs to the preceding (week-based) year.
+    if (woy == 0) {
+      // The 28th of December is always in the last week of the year
+      return Date(year - 1, 12, 28).getISOWeek;
     }
 
-    if (year > after.year) {
-      return true;
+    // If the week number equals 53, one must check that the date is not actually in week 1 of the following year
+    if (woy == 53 &&
+        DateTime(year, 1, 1).weekday != DateTime.thursday &&
+        DateTime(year, 12, 31).weekday != DateTime.thursday) {
+      return 1;
     }
 
-    // years are equal - comapre month
-    if (month < after.month) {
-      return false;
-    }
-
-    if (month > after.month) {
-      return true;
-    }
-
-    // months are equal - comapre days
-    if (day < after.day) {
-      return false;
-    }
-
-    if (day > after.day) {
-      return true;
-    }
-
-    return orSame;
+    return woy;
   }
 
-  bool get isToday {
-    return year == today.year && month == today.month && day == today.day;
+  int get _ordinalDate {
+    const offsets = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+    return offsets[month - 1] + day + (isLeapYear && month > 2 ? 1 : 0);
   }
 
-  static Date get today => Date.from(DateTime.now());
+  /// Return true if this date day is monday
+  bool get isMonday => weekday == DateTime.monday;
 
-  static Date get tomorrow =>
-      Date.from(DateTime.now().add(const Duration(hours: 24)));
+  /// Return true if this date day is tuesday
+  bool get isTuesday => weekday == DateTime.tuesday;
 
-  bool operator >(Date other) {
-    return isAfter(other);
-    //   asDateTime.isAfter(other.asDateTime);
-  }
+  /// Return true if this date day is wednesday
+  bool get isWednesday => weekday == DateTime.wednesday;
 
-  bool operator >=(Date other) {
-    return isAfter(other, orSame: true);
-    // final otherDateTime = other.asDateTime;
-    // return otherDateTime == otherDateTime || asDateTime.isAfter(otherDateTime);
-  }
+  /// Return true if this date day is thursday
+  bool get isThursday => weekday == DateTime.thursday;
 
-  bool operator <(Date other) {
-    return other.isAfter(this);
-    // return other.asDateTime.isAfter(asDateTime);
-  }
+  /// Return true if this date day is friday
+  bool get isFriday => weekday == DateTime.friday;
 
-  bool operator <=(Date other) {
-    return other.isAfter(this, orSame: true);
-    // final otherDateTime = other.asDateTime;
-    // return otherDateTime == otherDateTime || otherDateTime.isAfter(asDateTime);
-  }
+  /// Return true if this date day is saturday
+  bool get isSaturday => weekday == DateTime.saturday;
+
+  /// Return true if this date day is sunday
+  bool get isSunday => weekday == DateTime.sunday;
+
+  /// Is the given date the first day of a month?
+  bool get isFirstDayOfMonth => isSameDay(startOfMonth);
+
+  /// Return true if this date [isAfter] [Date.now]
+  bool get isFuture => isAfter(Date.today());
+
+  /// Is the given date the last day of a month?
+  bool get isLastDayOfMonth => isSameDay(endOfMonth);
+
+  /// Is the given date in the leap year?
+  bool get isLeapYear =>
+      (year % 400 == 0) || (year % 4 == 0 && year % 100 != 0);
+
+  /// Return true if this date [isBefore] [Date.now]
+  bool get isPast => isBefore(Date.today());
+
+  /// Check if this date is in the same day than other
+  bool isSameDay(Date other) => this == other;
+
+  /// Check if this date is in the same month than other
+  bool isSameMonth(Date other) => startOfMonth == other.startOfMonth;
+
+  /// Check if this date is in the same quarter
+  bool isSameQuarter(Date other) => startOfQuarter == other.startOfQuarter;
+
+  /// Check if this date is in the same week than other
+  bool isSameWeek(Date other) => startOfWeek == other.startOfWeek;
+
+  /// Check if this date is in the same iso week than other
+  bool isSameISOWeek(Date other) => startOfISOWeek == other.startOfISOWeek;
+
+  /// Check if this date is in the same year than other
+  bool isSameYear(Date other) => year == other.year;
+
+  /// Check if this date is in the same month than [Date.today]
+  bool get isThisWeek => isSameWeek(Date.today());
+
+  /// Check if this date is in the same month than [Date.today]
+  bool get isThisIsoWeek => isSameISOWeek(Date.today());
+
+  /// Check if this date is in the same month than [Date.today]
+  bool get isThisMonth => isSameMonth(Date.today());
+
+  /// Check if this date is in the same month than [Date.today]
+  bool get isThisQuarter => isSameQuarter(Date.today());
+
+  /// Check if this date is in the same year than [Date.today]
+  bool get isThisYear => isSameYear(Date.today());
+
+  /// Check if this date is in the same day than [Date.today]
+  bool get isToday => isSameDay(Date.today());
+
+  /// Check if this date is in the same day than [Date.today]
+  bool get isTomorrow => isSameDay(Date.tomorrow());
+
+  /// Check if this date is in the same day than [Date.today]
+  bool get isYesterday => isSameDay(Date.yesterday());
+
+  /// Return true if this [DateTime] is a saturday or a sunday
+  bool get isWeekend =>
+      weekday == DateTime.saturday || weekday == DateTime.sunday;
+
+  ///
+  bool operator >(Date other) => isAfter(other);
+
+  ///
+  bool operator >=(Date other) => isSameOrAfter(other);
+
+  ///
+  bool operator <(Date other) => isBefore(other);
+
+  ///
+  bool operator <=(Date other) => isSameOrBefore(other);
 
   @override
   bool operator ==(Object other) =>
@@ -117,9 +316,5 @@ class Date {
       );
 
   @override
-  String toString() => [
-        year,
-        month.toString().padLeft(2, '0'),
-        day.toString().padLeft(2, '0'),
-      ].join('-');
+  String toString() => DateFormat.yMd().format(asDateTime);
 }

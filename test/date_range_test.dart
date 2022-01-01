@@ -13,10 +13,6 @@ void main() {
     then('should be valid', () {
       range.isValid.should.beTrue();
     });
-
-    then('toString() should be with -', () {
-      range.toString().should.be('2021-01-01-2021-12-31');
-    });
   });
 
   test('Two date ranges should be equal', () {

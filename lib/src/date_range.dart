@@ -7,10 +7,14 @@ class DateRange {
   /// Initialize `DateRange`
   const DateRange(this.start, this.end);
 
+  ///
   final Date start;
+
+  ///
   final Date end;
 
-  bool get isValid => start < end;
+  ///
+  bool get isValid => start <= end;
 
   @override
   bool operator ==(Object other) =>
@@ -23,5 +27,5 @@ class DateRange {
       );
 
   @override
-  String toString() => '$start-$end';
+  String toString() => '$start - $end';
 }
