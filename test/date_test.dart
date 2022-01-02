@@ -313,7 +313,7 @@ void main() {
     then('Prev week', () {
       final res = date.previousWeek;
 
-      res.day.should.be(24);
+      res.day.should.be(25);
       res.month.should.be(3);
       res.year.should.be(2021);
     });
@@ -331,6 +331,14 @@ void main() {
 
       res.day.should.be(1);
       res.month.should.be(6);
+      res.year.should.be(2021);
+    });
+
+    then('Add 1 months to end of month', () {
+      final res = const Date(2021, 10, 31).addMonths(1);
+
+      res.day.should.be(1);
+      res.month.should.be(12);
       res.year.should.be(2021);
     });
 

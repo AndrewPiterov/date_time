@@ -49,19 +49,22 @@ class Date {
   DateTime get asDateTime => DateTime(year, month, day);
 
   ///
+  DateTime get asUtcDateTime => DateTime.utc(year, month, day);
+
+  /// Add a [Duration] to this date
   Date add(Duration duration) {
-    final t = asDateTime.add(duration);
+    final t = asUtcDateTime.add(duration);
     return Date(t.year, t.month, t.day);
   }
 
   /// Substract a [Duration] to this date
-  Date subtract(Duration duration) => add(Duration.zero - duration);
-
-  ///
-  Date addDays(int amount) {
-    final t = asDateTime.add(Duration(hours: amount * 24));
+  Date subtract(Duration duration) {
+    final t = asUtcDateTime.subtract(duration);
     return Date(t.year, t.month, t.day);
   }
+
+  /// Add days
+  Date addDays(int amount) => add(Duration(days: amount));
 
   /// Add a certain amount of weeks to this date
   Date addWeeks(int amount) => addDays(amount * 7);
@@ -89,13 +92,13 @@ class Date {
   Date subYears(int amount) => addYears(-amount);
 
   ///
-  Date setYear(int year) => DateTime(year, month, day).date;
+  Date setYear(int year) => DateTime.utc(year, month, day).date;
 
   ///
-  Date setMonth(int month) => DateTime(year, month, day).date;
+  Date setMonth(int month) => DateTime.utc(year, month, day).date;
 
   ///
-  Date setDay(int day) => DateTime(year, month, day).date;
+  Date setDay(int day) => DateTime.utc(year, month, day).date;
 
   ///
   bool isAfter(Date other) => asDateTime.isAfter(other.asDateTime);
