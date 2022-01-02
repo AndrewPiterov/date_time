@@ -134,12 +134,16 @@ void main() {
     });
 
     then('is this week', () {
-      if (today.weekday < DateTime.wednesday) {
-        today.addDays(1).isThisWeek.should.beTrue();
-        today.addDays(1).isThisIsoWeek.should.beTrue();
+      if (today.weekday == DateTime.sunday) {
+        today.subDays(1).isThisIsoWeek.should.beTrue();
       } else {
-        today.subDays(1).isThisWeek.should.beTrue();
         today.addDays(1).isThisIsoWeek.should.beTrue();
+      }
+
+      if (today.weekday == DateTime.saturday) {
+        today.subDays(1).isThisWeek.should.beTrue();
+      } else {
+        today.addDays(1).isThisWeek.should.beTrue();
       }
     });
 
