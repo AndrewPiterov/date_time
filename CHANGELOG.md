@@ -1,3 +1,10 @@
+## 0.5.0
+
+* [Add] getter `now` for `Date`
+* [Add] methods `parse` & `tryParse` for `Date`
+* [Add] methods `addDuration(dur:)`, `closeTo()`, `formatAs()` for `Time`
+* [Add] new date functions and manipulations. Inspirited by dart_date (thanks for [westito](https://github.com/westito))
+
 ## 0.4.5
 
 * [Add] arithmetic operators

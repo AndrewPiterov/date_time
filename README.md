@@ -104,11 +104,19 @@ final isCrossing = timeRange.isCross(timeRange2);
 print('Time ranges are crossing: $isCrossing');
 ```
 
+## Changelog
+
+Please see the [Changelog](CHANGELOG.md) page to know what's recently changed.
+
 ## Contributing
+
+Feel free to contribute to this project.
+
+If you find a bug or want a feature, but don't know how to fix/implement it, please fill an [issue](https://github.com/AndrewPiterov/date_time/issues/new).\
+If you fixed a bug or implemented a new feature, please send a [pull request](https://github.com/AndrewPiterov/date_time/pulls).
 
 We accept the following contributions:
 
-* [Reporting issues](https://github.com/AndrewPiterov/date_time/issues/new)
 * New features
 * Improving documentation
 * Fixing bugs
@@ -116,3 +124,5 @@ We accept the following contributions:
 ## Maintainers
 
 * [Andrew Piterov](mailto:contact@andrewpiterov.com?subject=[GitHub]%20Source%20Dart%20date_time)
+
+<a href="https://www.buymeacoffee.com/devcraft.ninja" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Support me" height="41" width="174"></a>
