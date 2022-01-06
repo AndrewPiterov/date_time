@@ -13,6 +13,10 @@ void main() {
     then('should be valid', () {
       range.isValid.should.beTrue();
     });
+
+    then('toString() should return format "d/M/YYYY - d/M/YYYY"', () {
+      range.toString().should.be('1/1/2021 - 12/31/2021');
+    });
   });
 
   test('Two date ranges should be equal', () {

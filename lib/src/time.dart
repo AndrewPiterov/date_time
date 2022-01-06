@@ -165,23 +165,6 @@ class Time {
       other.mins == mins &&
       other.secs == secs;
 
-  @override
-  int get hashCode => hash3(
-        hours.hashCode,
-        mins.hashCode,
-        secs.hashCode,
-      );
-
-  @override
-  String toString() => [
-        hours.toString().padLeft(2, '0'),
-        mins.toString().padLeft(2, '0'),
-        secs.toString().padLeft(2, '0'),
-      ].join(defaultSeparator);
-}
-
-///
-extension TimeStringFormatingExtensions on Time {
   /// Allowed formats `HH:mm:ss` and `HH:mm`
   String format([String format = 'HH:mm:ss']) {
     if (format == 'HH:mm:ss') {
@@ -201,10 +184,7 @@ extension TimeStringFormatingExtensions on Time {
   ///
   String toStringWithSeparator(String separator) =>
       toString().replaceAll(Time.defaultSeparator, separator);
-}
 
-///
-extension TimeComparisonExtensions on Time {
   ///
   bool isAfter(Time time, {bool orSame = false}) {
     return orSame ? this >= time : this > time;
@@ -236,10 +216,7 @@ extension TimeComparisonExtensions on Time {
   bool operator >(Time other) {
     return inMins > other.inMins;
   }
-}
 
-///
-extension TimeArithmeticExtensions on Time {
   ///
   Time operator +(Time other) {
     return Time.fromSeconds(inSeconds + other.inSeconds);
@@ -263,4 +240,18 @@ extension TimeArithmeticExtensions on Time {
   Time operator /(num times) {
     return Time.fromSeconds((inSeconds / times).floor());
   }
+
+  @override
+  int get hashCode => hash3(
+        hours.hashCode,
+        mins.hashCode,
+        secs.hashCode,
+      );
+
+  @override
+  String toString() => [
+        hours.toString().padLeft(2, '0'),
+        mins.toString().padLeft(2, '0'),
+        secs.toString().padLeft(2, '0'),
+      ].join(defaultSeparator);
 }

@@ -28,4 +28,12 @@ void main() {
 
   final isCrossing = timeRange.isCross(timeRange2);
   print('Time ranges are crossing: $isCrossing');
+
+  // String representation
+  final Time? someTime = const Time(1, mins: 2, secs: 3);
+  print(someTime!.toStringWithSeparator('::'));
+
+  // Get [Date] & [Time] from [DateTime]
+  print(DateTime.now().date);
+  print(DateTime.now().time);
 }

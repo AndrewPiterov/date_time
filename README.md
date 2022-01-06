@@ -40,14 +40,20 @@ Please, check ([examples](./example/dates.dart)) folder for more advanced exampl
 ### Date
 
 ```dart
+// Get [Date] & [Time] from [DateTime]
+print(DateTime(2022, 1, 6).date); // prints 1/6/2022
+print(DateTime(7, 38, 24).time); // 07:38:24
+```
+
+```dart
 given('DateTime', () {
   final dateTime = DateTime(2020, 11, 30, 14, 33, 17);
 
-  then('date should be equal to', () {
+  then('[Date] should be equal to', () {
     dateTime.date.should.be(Date(2020, 11, 30));
   });
 
-  then('time should be equal to', () {
+  then('[Time] should be equal to', () {
     dateTime.time.should.be(Time(14, mins: 33, secs: 17));
   });
 });
@@ -102,9 +108,9 @@ print('Time ranges are crossing: $isCrossing');
 
 We accept the following contributions:
 
+* [Reporting issues](https://github.com/AndrewPiterov/date_time/issues/new)
 * New features
 * Improving documentation
-* Reporting issues
 * Fixing bugs
 
 ## Maintainers

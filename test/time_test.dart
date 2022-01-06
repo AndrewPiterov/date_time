@@ -12,11 +12,18 @@ void main() {
     time.should.be(time2);
   });
 
-  test('compare time', () {
+  test('compare with `isAfter`', () {
     final time = Time(21, mins: 01);
     final time2 = Time(22, mins: 01);
 
     time2.isAfter(time).should.beTrue();
+  });
+
+  test('compare with `isBefore`', () {
+    final time = Time(21, mins: 01);
+    final time2 = Time(22, mins: 01);
+
+    time.isBefore(time2).should.beTrue();
   });
 
   test('compare time (2)', () {
