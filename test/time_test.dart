@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:date_time/date_time.dart';
-import 'package:date_time/res/overflowed_time.dart';
 import 'package:given_when_then_unit_test/given_when_then_unit_test.dart';
 import 'package:shouldly/shouldly.dart';
 import 'package:test/scaffolding.dart';
