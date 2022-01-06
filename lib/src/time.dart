@@ -1,6 +1,28 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:quiver/core.dart';
 
 import 'overflowed_time.dart';
+
+/// Format time
+///
+/// `HHmmss` - 04:55:07
+/// `HHmm` - 04:55
+/// `Hms` - 4:55:7
+/// `Hm` - 4:55
+enum TimeStringFormat {
+  ///
+  HHmmss,
+
+  ///
+  HHmm,
+
+  ///
+  Hms,
+
+  ///
+  Hm,
+}
 
 /// Time object
 ///
@@ -98,18 +120,21 @@ class Time {
 
   /// Add hours and may be `Oveflowed`
   Time addHours(int amount) {
-    final additional = amount * 60;
-    final totalMinutes = inMins + additional;
-    return Time.fromMinutes(totalMinutes);
+    return addDuration(Duration(hours: amount));
   }
 
   /// Add minutes and may be `Oveflowed`
   Time addMinutes(int amount) {
-    final totalMinutes = inMins + amount;
-    return Time.fromMinutes(totalMinutes);
+    return addDuration(Duration(minutes: amount));
+  }
+
+  /// Add seconds and may be `Oveflowed`
+  Time addSeconds(int amount) {
+    return addDuration(Duration(seconds: amount));
   }
 
   /// Now
+  // ignore: prefer_constructors_over_static_methods
   static Time get now {
     final dt = DateTime.now();
     return Time(
@@ -120,6 +145,7 @@ class Time {
   }
 
   /// UTC Now
+  // ignore: prefer_constructors_over_static_methods
   static Time get utcNow {
     final dt = DateTime.now().toUtc();
     return Time(
@@ -168,17 +194,40 @@ class Time {
   /// Allowed formats `HH:mm:ss` and `HH:mm`
   String format([String format = 'HH:mm:ss']) {
     if (format == 'HH:mm:ss') {
-      return toString();
+      // ignore: avoid_redundant_argument_values
+      return formatAs(TimeStringFormat.HHmmss);
     }
 
     if (format == 'HH:mm') {
-      return [
-        hours.toString().padLeft(2, '0'),
-        mins.toString().padLeft(2, '0'),
-      ].join(':');
+      return formatAs(TimeStringFormat.HHmm);
     }
 
     return toString();
+  }
+
+  /// Allowed formats `HH:mm:ss` and `HH:mm`
+  String formatAs([TimeStringFormat format = TimeStringFormat.HHmmss]) {
+    switch (format) {
+      case TimeStringFormat.Hms:
+        return [
+          hours.toString(),
+          mins.toString(),
+          secs.toString(),
+        ].join(':');
+      case TimeStringFormat.Hm:
+        return [
+          hours.toString(),
+          mins.toString(),
+        ].join(':');
+      case TimeStringFormat.HHmm:
+        return [
+          hours.toString().padLeft(2, '0'),
+          mins.toString().padLeft(2, '0'),
+        ].join(':');
+      case TimeStringFormat.HHmmss:
+      default:
+        return toString();
+    }
   }
 
   ///
@@ -193,6 +242,26 @@ class Time {
   ///
   bool isBefore(Time time, {bool orSame = false}) {
     return orSame ? this <= time : this < time;
+  }
+
+  /// Close to another [Time]
+  ///
+  /// [delta] The maximum seconds of which the two values may differ.
+  /// Default delta is Duration(seconds: 1)
+  bool closeTo(
+    Time anotherTime, {
+    Duration delta = const Duration(seconds: 1),
+  }) {
+    final anotherTimeTotalSeconds = anotherTime.inSeconds;
+    final deltaSeconds = delta.inSeconds;
+
+    var diff = anotherTimeTotalSeconds - inSeconds;
+    if (diff < 0) {
+      diff = -diff;
+    }
+
+    final isClose = diff <= deltaSeconds;
+    return isClose;
   }
 
   // @override
@@ -220,6 +289,12 @@ class Time {
   ///
   Time operator +(Time other) {
     return Time.fromSeconds(inSeconds + other.inSeconds);
+  }
+
+  ///
+  Time addDuration(Duration dur) {
+    final durationInSeconds = dur.inSeconds;
+    return Time.fromSeconds(inSeconds + durationInSeconds);
   }
 
   ///

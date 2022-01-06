@@ -58,6 +58,27 @@ void main() {
       });
     });
 
+    when('add minutes', () {
+      then('minutes should be summarize', () {
+        time.addMinutes(2).should.be(Time(20, mins: 2));
+      });
+    });
+
+    when('add seconds', () {
+      then('seconds should be summarize', () {
+        time.addSeconds(7).should.be(Time(20, secs: 7));
+      });
+    });
+
+    when('add duration', () {
+      then('should be summarize', () {
+        time
+            .addDuration(Duration(seconds: 77))
+            .should
+            .be(Time(20, mins: 1, secs: 17));
+      });
+    });
+
     when('add more hours for next day', () {
       late Time res;
 
@@ -76,6 +97,66 @@ void main() {
       then('hours shoudld be corrected', () {
         res.should.be(Time(1));
       });
+    });
+  });
+
+  given('Time 04:05:07', () {
+    const time = Time(4, mins: 5, secs: 7);
+    when('foramt as `TimeStringFormat.HHmmss`', () {
+      then('string should be 04:05:07', () {
+        // ignore: avoid_redundant_argument_values
+        time.formatAs(TimeStringFormat.HHmmss).should.be('04:05:07');
+      });
+    });
+
+    when('foramt w/o parameter', () {
+      then('string should be 04:05:07', () {
+        time.format().should.be('04:05:07');
+      });
+    });
+
+    when('foramt as `TimeStringFormat.HHmm`', () {
+      then('string should be 04:05', () {
+        time.formatAs(TimeStringFormat.HHmm).should.be('04:05');
+      });
+    });
+
+    when('foramt as `TimeStringFormat.Hms`', () {
+      then('string should be 4:5:7', () {
+        time.formatAs(TimeStringFormat.Hms).should.be('4:5:7');
+      });
+    });
+
+    when('foramt as `TimeStringFormat.Hm`', () {
+      then('string should be 4:5', () {
+        //
+        time.formatAs(TimeStringFormat.Hm).should.be('4:5');
+      });
+    });
+  });
+
+  given('DateTime Now', () {
+    final dateTime = DateTime.now();
+    final dateTimeUtc = DateTime.now().toUtc();
+
+    then('Time now should be close to', () {
+      final time = Time.now;
+      time.closeTo(dateTime.time).should.beTrue();
+    });
+
+    then('Time not now should be not close to', () {
+      final time = Time.now.addDuration(Duration(seconds: 2));
+      time.closeTo(dateTime.time).should.beFalse();
+    });
+
+    then('UTC Time now should be close', () {
+      final time = Time.utcNow;
+      time.closeTo(dateTimeUtc.time).should.beTrue();
+    });
+
+    then('UTC Time not now should be not close to', () {
+      final time = Time.utcNow.addDuration(Duration(seconds: 2));
+      time.closeTo(dateTime.time).should.beFalse();
     });
   });
 
