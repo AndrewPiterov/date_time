@@ -26,6 +26,52 @@ class Date {
         month = dt.month,
         day = dt.day;
 
+  /// Constructs a new [DateTime] instance based on [dateStr].
+  ///
+  /// Given user input, attempt to parse the [dateStr] into the anticipated
+  /// format, treating it as being in the local timezone.
+  ///
+  /// If [dateStr] does not match our format, throws a [FormatException].
+  /// This will accept dates whose values are not strictly valid, or strings
+  /// with additional characters (including whitespace) after a valid date. For
+  /// stricter parsing, use [dateStr].
+  static Date parse(
+    String dateStr, {
+    String? format,
+    bool utc = false,
+  }) {
+    if (format == null || format == '') {
+      return DateTime.parse(dateStr).date;
+    }
+
+    final formatter = DateFormat(format);
+    final dateTimeFromStr = formatter.parse(dateStr, utc);
+    return dateTimeFromStr.date;
+  }
+
+  /// Constructs a new [DateTime] instance based on [dateStr].
+  ///
+  /// Works like [parse] except that this function returns `null`
+  /// where [parse] would throw a [FormatException].
+  static Date? tryParse(
+    String dateStr, {
+    String? format,
+    bool utc = false,
+  }) {
+    try {
+      return parse(
+        dateStr,
+        format: format,
+        utc: utc,
+      );
+    } on FormatException {
+      return null;
+    }
+  }
+
+  /// Now
+  static Date get now => DateTime.now().date;
+
   /// Today
   factory Date.today() => Date.from(DateTime.now());
 

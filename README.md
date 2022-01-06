@@ -115,4 +115,4 @@ We accept the following contributions:
 
 ## Maintainers
 
-* [Andrew Piterov](mailto:piterov1990@gmail.com?subject=[GitHub]%20Source%20Dart%20date_time)
+* [Andrew Piterov](mailto:contact@andrewpiterov.com?subject=[GitHub]%20Source%20Dart%20date_time)

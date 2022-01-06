@@ -1,6 +1,7 @@
 import 'package:date_time/date_time.dart';
 import 'package:given_when_then_unit_test/given_when_then_unit_test.dart';
 import 'package:shouldly/shouldly.dart';
+import 'package:test/scaffolding.dart';
 
 void main() {
   given('Date', () {
@@ -598,6 +599,46 @@ void main() {
     then('ISOWeek - Week compare', () {
       const Date(1922, DateTime.january, 1).getWeek.should.be(1);
       const Date(1922, DateTime.january, 1).getISOWeek.should.be(52);
+    });
+  });
+
+  group('Parsing', () {
+    //
+    test('w/o formatter', () {
+      final dates = [
+        '2012-02-27 13:27:00',
+        '2012-02-27 13:27:00.123456z',
+        '20120227 13:27:00',
+        '20120227T132700',
+        '+20120227',
+        '2012-02-27T14Z',
+        '2012-02-27T14+00:00',
+        '2012-02-27T14:00:00-0500',
+        '20120227',
+        '2012-02-27',
+      ];
+
+      for (final dateStr in dates) {
+        final date = Date.parse(dateStr);
+        date.should.be(const Date(2012, 2, 27));
+      }
+    });
+
+    test('with formatter', () {
+      const format = "MMMM dd, yyyy 'at' hh:mm:ss a Z";
+      final date =
+          Date.parse('August 6, 2020 at 5:44:45 PM UTC+7', format: format);
+      date.should.be(const Date(2020, 8, 6));
+    });
+
+    test('try parse invalid date w/o formatter', () {
+      final date = Date.tryParse('12/31/2021');
+      date.should.beNull();
+    });
+
+    test('try parse with format', () {
+      final date = Date.tryParse('12/31/2021', format: 'MM/dd/yyyy');
+      date.should.be(const Date(2021, 12, 31));
     });
   });
 }
