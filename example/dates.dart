@@ -36,4 +36,7 @@ void main() {
   // Get [Date] & [Time] from [DateTime]
   print(DateTime.now().date);
   print(DateTime.now().time);
+
+  final dateCopyWithYear = Date(year: 2021, month: 3, day: 7);
+  print(dateCopyWithYear.copyWith(year: 2022)); // prints 3/7/2022
 }

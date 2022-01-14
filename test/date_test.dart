@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_redundant_argument_values
+// ignore_for_file: avoid_redundant_argument_values, prefer_const_constructors
 
 import 'package:date_time/date_time.dart';
 import 'package:given_when_then_unit_test/given_when_then_unit_test.dart';
@@ -681,5 +681,21 @@ void main() {
     date.month.should.be(dateTime.month);
     date.year.should.be(dateTime.year);
     date.should.be(dateTime.date);
+  });
+
+  group('copyWith', () {
+    const date = Date(year: 2022, month: 5, day: 7);
+
+    test('year', () {
+      date.copyWith(year: 2025).should.be(Date(year: 2025, month: 5, day: 7));
+    });
+
+    test('month', () {
+      date.copyWith(month: 9).should.be(Date(year: 2022, month: 9, day: 7));
+    });
+
+    test('day', () {
+      date.copyWith(day: 13).should.be(Date(year: 2022, month: 5, day: 13));
+    });
   });
 }

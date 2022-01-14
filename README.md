@@ -59,6 +59,13 @@ given('DateTime', () {
 });
 ```
 
+#### CopyWith
+
+```dart
+final date = Date(year: 2021, month: 3, day: 7);
+print(date.copyWith(year: 2022)); // prints 07/03/2022
+```
+
 ### DateRange
 
 ```dart
@@ -79,6 +86,14 @@ final time2 = time.addMinutes(30);
 final isTime2After = time2 > time;
 final isTime2After2 = time2.isAfter(time);
 print('Is time2 after: $isTime2After');
+```
+
+#### CopyWith
+
+```dart
+  final time = Time(hour: 6, minute: 30, second: 7);
+  print(time);                      // prints 06:30:07
+  print(time.copyWith(second: 0));  // prints 06:30:00
 ```
 
 ### Overflowed Time

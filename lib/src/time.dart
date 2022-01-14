@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names, prefer_constructors_over_static_methods
 
+import 'package:date_time/date_time.dart';
 import 'package:quiver/core.dart';
 
 import 'overflowed_time.dart';
@@ -41,6 +42,11 @@ class Time {
         assert(minute <= 60),
         assert(second >= 0),
         assert(second <= 60);
+
+  ///
+  factory Time.from(DateTime dateTime) {
+    return dateTime.time;
+  }
 
   ///
   factory Time.fromMinutes(int amount) {
@@ -100,19 +106,23 @@ class Time {
 
   /// Tries to onvert a string to `Time`
   ///
-  /// [str] should be separated wit `:`, eg: '23:30:21' or `3:17`
-  static Time? fromStr(String? str) {
+  /// [str] should be separated with `:`, eg: '23:30:21' or `3:17`
+  static Time? fromStr(String? str, {String separator = ':'}) {
     try {
       if (str == null || str.isEmpty) {
         return null;
       }
 
-      final arr = str.split(':');
+      final arr = str.split(separator);
+      if (arr.isEmpty) {
+        return null;
+      }
 
-      final h = arr[0];
-      final String m = arr.length > 1 ? arr[1] : '0';
+      final hour = int.parse(arr.first);
+      final minute = int.parse(arr.length > 1 ? arr[1] : '0');
+      final second = int.parse(arr.length > 2 ? arr[2] : '0');
 
-      return Time(hour: int.parse(h), minute: int.parse(m));
+      return Time(hour: hour, minute: minute, second: second);
     } catch (e) {
       return null;
     }
@@ -327,4 +337,13 @@ class Time {
         minute.toString().padLeft(2, '0'),
         second.toString().padLeft(2, '0'),
       ].join(defaultSeparator);
+
+  ///
+  Time copyWith({int? hour, int? minute, int? second}) {
+    return Time(
+      hour: hour ?? this.hour,
+      minute: minute ?? this.minute,
+      second: second ?? this.second,
+    );
+  }
 }

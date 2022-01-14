@@ -1,3 +1,9 @@
+## 0.6.0
+
+* **[BREAKING CHANGE]** getters `now` of `Date` and `Time` into method `now()`
+* **[BREAKING CHANGE]** constructors of `Date` and `Time` with required named parameters
+* [Add] `copyWith()` for `Date` and `Time`
+
 ## 0.5.0
 
 * [Add] getter `now` for `Date`

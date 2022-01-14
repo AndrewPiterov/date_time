@@ -133,6 +133,18 @@ void main() {
         time.formatAs(TimeStringFormat.Hm).should.be('4:5');
       });
     });
+
+    when('format is HH:mm', () {
+      then('description', () {
+        time.format('HH:mm').should.be('04:05');
+      });
+    });
+
+    when('format w/o parameter', () {
+      then('description', () {
+        time.format().should.be('04:05:07');
+      });
+    });
   });
 
   given('DateTime Now', () {
@@ -382,5 +394,36 @@ void main() {
     res.hour.should.be(23);
     res.minute.should.be(59);
     res.second.should.be(59);
+  });
+
+  group('copyWith', () {
+    const time = Time(hour: 6, minute: 7, second: 8);
+
+    test('hour', () {
+      time.copyWith(hour: 22).should.be(Time(hour: 22, minute: 7, second: 8));
+    });
+
+    test('minute', () {
+      time.copyWith(minute: 22).should.be(Time(hour: 6, minute: 22, second: 8));
+    });
+
+    test('second', () {
+      time.copyWith(second: 22).should.be(Time(hour: 6, minute: 7, second: 22));
+    });
+  });
+
+  test('from', () {
+    final time = Time.from(DateTime(2022, 1, 15, 6, 32, 54));
+    time.should.be(Time(hour: 6, minute: 32, second: 54));
+  });
+
+  group('fromStr', () {
+    test('HH:mm', () {
+      Time.fromStr('20:33').should.be(Time(hour: 20, minute: 33));
+    });
+
+    test('HH:mm:ss', () {
+      Time.fromStr('20:33:7').should.be(Time(hour: 20, minute: 33, second: 7));
+    });
   });
 }

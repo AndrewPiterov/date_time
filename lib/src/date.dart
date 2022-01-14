@@ -381,4 +381,13 @@ class Date {
 
   @override
   String toString() => DateFormat.yMd().format(asDateTime);
+
+  ///
+  Date copyWith({int? year, int? month, int? day}) {
+    return Date(
+      year: year ?? this.year,
+      month: month ?? this.month,
+      day: day ?? this.day,
+    );
+  }
 }
