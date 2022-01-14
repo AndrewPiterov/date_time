@@ -50,11 +50,11 @@ given('DateTime', () {
   final dateTime = DateTime(2020, 11, 30, 14, 33, 17);
 
   then('[Date] should be equal to', () {
-    dateTime.date.should.be(Date(2020, 11, 30));
+    dateTime.date.should.be(Date(year: 2020, month: 11, day: 30));
   });
 
   then('[Time] should be equal to', () {
-    dateTime.time.should.be(Time(14, mins: 33, secs: 17));
+    dateTime.time.should.be(Time(hour: 14, minute: 33, second: 17));
   });
 });
 ```
@@ -63,8 +63,8 @@ given('DateTime', () {
 
 ```dart
 final range = DateRange(
-  const Date(2021, 1, 1),
-  const Date(2021, 12, 31),
+  const Date(year: 2021, month: 1, day: 1),
+  const Date(year: 2021, month: 12, day: 31),
 );
 
 test('should be valid', () {
@@ -86,7 +86,7 @@ print('Is time2 after: $isTime2After');
 to keep days
 
 ```dart
-final time = Time(20).addHours(5);
+final time = Time(hour: 20).addHours(5);
 
 print(time is OverflowedTime); // prints `true`
 print(time.asOverflowed.days); // prints `1`

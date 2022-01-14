@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_redundant_argument_values
+
 import 'package:date_time/date_time.dart';
 import 'package:given_when_then_unit_test/given_when_then_unit_test.dart';
 import 'package:shouldly/shouldly.dart';
@@ -42,7 +44,7 @@ void main() {
   });
 
   given('Weekday test', () {
-    const monday = Date(2022, 1, 3);
+    const monday = Date(year: 2022, day: 3);
 
     then('Is Monday', () {
       (monday.isMonday).should.beTrue();
@@ -75,35 +77,35 @@ void main() {
 
   given('Leap', () {
     then('2020 is leap year', () {
-      const Date(2020, 1, 1).isLeapYear.should.beTrue();
+      const Date(year: 2020).isLeapYear.should.beTrue();
     });
 
     then('2021 is not leap year', () {
-      const Date(2021, 1, 1).isLeapYear.should.beFalse();
+      const Date(year: 2021).isLeapYear.should.beFalse();
     });
   });
 
   given('Same', () {
     final today = Date.today();
-    const date1 = Date(2022, 1, 1);
-    const date2 = Date(2022, 1, 2);
-    const date3 = Date(2022, 1, 3);
-    const date4 = Date(2022, 1, 7);
-    const date5 = Date(2022, 2, 15);
-    const date6 = Date(2022, 12, 15);
+    const date1 = Date(year: 2022, day: 1);
+    const date2 = Date(year: 2022, day: 2);
+    const date3 = Date(year: 2022, day: 3);
+    const date4 = Date(year: 2022, day: 7);
+    const date5 = Date(year: 2022, month: 2, day: 15);
+    const date6 = Date(year: 2022, month: 12, day: 15);
 
     then('isLastDay of month', () {
-      const Date(2021, 1, 31).isLastDayOfMonth.should.beTrue();
+      const Date(year: 2021, day: 31).isLastDayOfMonth.should.beTrue();
     });
 
     then('isFirstDay of month', () {
-      const Date(2021, 1, 1).isFirstDayOfMonth.should.beTrue();
+      const Date(year: 2021).isFirstDayOfMonth.should.beTrue();
     });
 
     then('is weekend', () {
-      const Date(2022, 1, 1).isWeekend.should.beTrue();
-      const Date(2022, 1, 2).isWeekend.should.beTrue();
-      const Date(2022, 1, 3).isWeekend.should.beFalse();
+      const Date(year: 2022).isWeekend.should.beTrue();
+      const Date(year: 2022, day: 2).isWeekend.should.beTrue();
+      const Date(year: 2022, day: 3).isWeekend.should.beFalse();
     });
 
     then('is same week', () {
@@ -181,13 +183,13 @@ void main() {
     });
 
     then('same hash', () {
-      (DateTime(2021).date.hashCode == const Date(2021, 1, 1).hashCode)
+      (DateTime(2021).date.hashCode == const Date(year: 2021).hashCode)
           .should
           .beTrue();
     });
 
     then('same toString', () {
-      (DateTime(2021).date.toString() == const Date(2021, 1, 1).toString())
+      (DateTime(2021).date.toString() == const Date(year: 2021).toString())
           .should
           .beTrue();
     });
@@ -197,11 +199,11 @@ void main() {
     final dateTime = DateTime(2020, 11, 30, 14, 33, 17);
 
     then('date should be equal to', () {
-      dateTime.date.should.be(const Date(2020, 11, 30));
+      dateTime.date.should.be(const Date(year: 2020, month: 11, day: 30));
     });
 
     then('time should be equal to', () {
-      dateTime.time.should.be(const Time(14, mins: 33, secs: 17));
+      dateTime.time.should.be(const Time(hour: 14, minute: 33, second: 17));
     });
 
     when('Compare with time greate', () {
@@ -213,7 +215,8 @@ void main() {
     });
 
     when('Compare with the same', () {
-      final dateTimeAfter = Date(dateTime.year, dateTime.month, dateTime.day);
+      final dateTimeAfter =
+          Date(year: dateTime.year, month: dateTime.month, day: dateTime.day);
 
       then('second time should be the same', () {
         dateTime.date.isAfter(dateTimeAfter).should.not.beTrue();
@@ -231,7 +234,7 @@ void main() {
     });
 
     when('add 24 hours', () {
-      final nextDay = const Date(2021, 1, 1).add(const Duration(hours: 24));
+      final nextDay = const Date(year: 2021).add(const Duration(hours: 24));
       then('next day', () {
         nextDay.year.should.be(2021);
         nextDay.month.should.be(1);
@@ -261,7 +264,7 @@ void main() {
   });
 
   given('Date add', () {
-    const date = Date(2021, 4, 1);
+    const date = Date(year: 2021, month: 4);
 
     then('add 1 day', () {
       final res = date.addDays(1);
@@ -336,7 +339,7 @@ void main() {
     });
 
     then('Add 1 months to end of month', () {
-      final res = const Date(2021, 10, 31).addMonths(1);
+      final res = const Date(year: 2021, month: 10, day: 31).addMonths(1);
 
       res.day.should.be(1);
       res.month.should.be(12);
@@ -417,10 +420,10 @@ void main() {
   });
 
   given('Quarters', () {
-    const date1 = Date(2021, 2, 15);
-    const date2 = Date(2021, 4, 2);
-    const date3 = Date(2021, 9, 30);
-    const date4 = Date(2021, 12, 31);
+    const date1 = Date(year: 2021, month: 2, day: 15);
+    const date2 = Date(year: 2021, month: 4, day: 2);
+    const date3 = Date(year: 2021, month: 9, day: 30);
+    const date4 = Date(year: 2021, month: 12, day: 31);
 
     then('Quarters', () {
       date1.quarter.should.be(1);
@@ -430,17 +433,17 @@ void main() {
     });
 
     then('Quarter bounds', () {
-      date1.startOfQuarter.should.be(const Date(2021, 1, 1));
-      date1.endOfQuarter.should.be(const Date(2021, 3, 31));
+      date1.startOfQuarter.should.be(const Date(year: 2021));
+      date1.endOfQuarter.should.be(const Date(year: 2021, month: 3, day: 31));
 
-      date2.startOfQuarter.should.be(const Date(2021, 4, 1));
-      date2.endOfQuarter.should.be(const Date(2021, 6, 30));
+      date2.startOfQuarter.should.be(const Date(year: 2021, month: 4, day: 1));
+      date2.endOfQuarter.should.be(const Date(year: 2021, month: 6, day: 30));
 
-      date3.startOfQuarter.should.be(const Date(2021, 7, 1));
-      date3.endOfQuarter.should.be(const Date(2021, 9, 30));
+      date3.startOfQuarter.should.be(const Date(year: 2021, month: 7, day: 1));
+      date3.endOfQuarter.should.be(const Date(year: 2021, month: 9, day: 30));
 
-      date4.startOfQuarter.should.be(const Date(2021, 10, 1));
-      date4.endOfQuarter.should.be(const Date(2021, 12, 31));
+      date4.startOfQuarter.should.be(const Date(year: 2021, month: 10, day: 1));
+      date4.endOfQuarter.should.be(const Date(year: 2021, month: 12, day: 31));
     });
 
     then('Quarter operations', () {
@@ -448,15 +451,21 @@ void main() {
       date1.addQuarters(3).quarter.should.be(4);
       date1.addQuarters(4).quarter.should.be(1);
 
-      date1.addQuarters(3).should.be(const Date(2021, 11, 15));
-      date1.addQuarters(4).should.be(const Date(2022, 2, 15));
+      date1
+          .addQuarters(3)
+          .should
+          .be(const Date(year: 2021, month: 11, day: 15));
+      date1.addQuarters(4).should.be(const Date(year: 2022, month: 2, day: 15));
 
-      date1.subQuarters(1).should.be(const Date(2020, 11, 15));
+      date1
+          .subQuarters(1)
+          .should
+          .be(const Date(year: 2020, month: 11, day: 15));
     });
   });
 
   given('Date', () {
-    const date = Date(2021, 5, 15);
+    const date = Date(year: 2021, month: 5, day: 15);
 
     then('Start of year', () {
       final res = date.startOfYear;
@@ -556,7 +565,7 @@ void main() {
   });
 
   given('Date', () {
-    const date = Date(2021, 4, 1);
+    const date = Date(year: 2021, month: 4);
 
     then('add 1 day duration', () {
       final res = date.add(const Duration(hours: 24));
@@ -577,28 +586,40 @@ void main() {
 
   given('Week', () {
     then('getWeek', () {
-      const Date(2005, DateTime.january, 2).getWeek.should.be(1);
+      const Date(year: 2005, month: DateTime.january, day: 2)
+          .getWeek
+          .should
+          .be(1);
     });
 
     then('getWeekPreviousYear', () {
-      const Date(2005, DateTime.january, 1).getWeek.should.be(53);
+      const Date(year: 2005, month: DateTime.january).getWeek.should.be(53);
     });
 
     then('getWeekBefore100AD', () {
-      const Date(7, DateTime.december, 30).getISOWeek.should.be(52);
+      const Date(year: 7, month: DateTime.december, day: 30)
+          .getISOWeek
+          .should
+          .be(52);
     });
 
     then('getISOWeek', () {
-      const Date(2005, DateTime.january, 3).getISOWeek.should.be(1);
+      const Date(year: 2005, month: DateTime.january, day: 3)
+          .getISOWeek
+          .should
+          .be(1);
     });
 
     then('getISOWeekPreviousYear', () {
-      const Date(2005, DateTime.january, 2).getISOWeek.should.be(53);
+      const Date(year: 2005, month: DateTime.january, day: 2)
+          .getISOWeek
+          .should
+          .be(53);
     });
 
     then('ISOWeek - Week compare', () {
-      const Date(1922, DateTime.january, 1).getWeek.should.be(1);
-      const Date(1922, DateTime.january, 1).getISOWeek.should.be(52);
+      const Date(year: 1922, month: DateTime.january).getWeek.should.be(1);
+      const Date(year: 1922, month: DateTime.january).getISOWeek.should.be(52);
     });
   });
 
@@ -620,7 +641,7 @@ void main() {
 
       for (final dateStr in dates) {
         final date = Date.parse(dateStr);
-        date.should.be(const Date(2012, 2, 27));
+        date.should.be(const Date(year: 2012, month: 2, day: 27));
       }
     });
 
@@ -628,7 +649,7 @@ void main() {
       const format = "MMMM dd, yyyy 'at' hh:mm:ss a Z";
       final date =
           Date.parse('August 6, 2020 at 5:44:45 PM UTC+7', format: format);
-      date.should.be(const Date(2020, 8, 6));
+      date.should.be(const Date(year: 2020, month: 8, day: 6));
     });
 
     test('try parse invalid date w/o formatter', () {
@@ -638,7 +659,27 @@ void main() {
 
     test('try parse with format', () {
       final date = Date.tryParse('12/31/2021', format: 'MM/dd/yyyy');
-      date.should.be(const Date(2021, 12, 31));
+      date.should.be(const Date(year: 2021, month: 12, day: 31));
     });
+  });
+
+  test('now()', () {
+    final dateTime = DateTime.now();
+    final date = Date.now();
+
+    date.day.should.be(dateTime.day);
+    date.month.should.be(dateTime.month);
+    date.year.should.be(dateTime.year);
+    date.should.be(dateTime.date);
+  });
+
+  test('nowUtc()', () {
+    final dateTime = DateTime.now().toUtc();
+    final date = Date.nowUtc();
+
+    date.day.should.be(dateTime.day);
+    date.month.should.be(dateTime.month);
+    date.year.should.be(dateTime.year);
+    date.should.be(dateTime.date);
   });
 }

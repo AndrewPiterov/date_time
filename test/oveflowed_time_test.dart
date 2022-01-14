@@ -5,7 +5,7 @@ import 'package:test/scaffolding.dart';
 
 void main() {
   test('calculate mins', () {
-    const oveflowedTime = OverflowedTime(hours: 1, days: 1);
+    const oveflowedTime = OverflowedTime(hour: 1, days: 1);
 
     oveflowedTime.inMins.should.be(25 * 60);
   });
@@ -25,7 +25,7 @@ void main() {
       });
 
       then('start should be right', () {
-        time.hours.should.be(23);
+        time.hour.should.be(23);
       });
     });
   });
@@ -45,7 +45,7 @@ void main() {
       });
 
       then('start should be right', () {
-        time.hours.should.be(1);
+        time.hour.should.be(1);
       });
     });
   });

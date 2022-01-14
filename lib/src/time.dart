@@ -1,4 +1,4 @@
-// ignore_for_file: constant_identifier_names
+// ignore_for_file: constant_identifier_names, prefer_constructors_over_static_methods
 
 import 'package:quiver/core.dart';
 
@@ -31,16 +31,16 @@ class Time {
   /// initialize `Time` object
   ///
   /// `Time(11,30,45)` for 11 hours 30 minutes 45 seconds
-  const Time(
-    this.hours, {
-    this.mins = 0,
-    this.secs = 0,
-  })  : assert(hours >= 0),
-        assert(hours < 24),
-        assert(mins >= 0),
-        assert(mins <= 60),
-        assert(secs >= 0),
-        assert(secs <= 60);
+  const Time({
+    required this.hour,
+    this.minute = 0,
+    this.second = 0,
+  })  : assert(hour >= 0),
+        assert(hour < 24),
+        assert(minute >= 0),
+        assert(minute <= 60),
+        assert(second >= 0),
+        assert(second <= 60);
 
   ///
   factory Time.fromMinutes(int amount) {
@@ -62,23 +62,23 @@ class Time {
 
     final m = (res / 60).floor();
     final s = res % 60;
-    return Time(h, mins: m, secs: s);
+    return Time(hour: h, minute: m, second: s);
   }
 
   /// Represents hours
-  final int hours;
+  final int hour;
 
   /// Represents minutes
-  final int mins;
+  final int minute;
 
   /// Represents seconds
-  final int secs;
+  final int second;
 
   /// Represents the `Time` in minutes
-  int get inMins => hours * 60 + mins;
+  int get inMins => hour * 60 + minute;
 
   /// Represents the `Time` in seconds
-  int get inSeconds => inMins * 60 + secs;
+  int get inSeconds => inMins * 60 + second;
 
   /// Convert to `OverflowedTime` representation
   OverflowedTime get asOverflowed {
@@ -86,7 +86,7 @@ class Time {
       return this as OverflowedTime;
     }
 
-    return OverflowedTime(hours: hours, days: 0, min: mins, sec: secs);
+    return OverflowedTime(hour: hour, days: 0, minute: minute, second: second);
   }
 
   ///
@@ -112,7 +112,7 @@ class Time {
       final h = arr[0];
       final String m = arr.length > 1 ? arr[1] : '0';
 
-      return Time(int.parse(h), mins: int.parse(m));
+      return Time(hour: int.parse(h), minute: int.parse(m));
     } catch (e) {
       return null;
     }
@@ -134,30 +134,28 @@ class Time {
   }
 
   /// Now
-  // ignore: prefer_constructors_over_static_methods
-  static Time get now {
+  static Time now() {
     final dt = DateTime.now();
     return Time(
-      dt.hour,
-      mins: dt.minute,
-      secs: dt.second,
+      hour: dt.hour,
+      minute: dt.minute,
+      second: dt.second,
     );
   }
 
   /// UTC Now
-  // ignore: prefer_constructors_over_static_methods
   static Time get utcNow {
     final dt = DateTime.now().toUtc();
     return Time(
-      dt.hour,
-      mins: dt.minute,
-      secs: dt.second,
+      hour: dt.hour,
+      minute: dt.minute,
+      second: dt.second,
     );
   }
 
   /// Round the time to next nearest
   Time roundToTheNearestMin(int stepInMin, {bool back = false}) {
-    final m = mins;
+    final m = minute;
     final r = m % stepInMin;
 
     if (r == 0) {
@@ -177,19 +175,19 @@ class Time {
   /// Keep days
   OverflowedTime oveflowBy(int days) {
     return OverflowedTime(
-      hours: hours,
+      hour: hour,
       days: days,
-      min: mins,
-      sec: secs,
+      minute: minute,
+      second: second,
     );
   }
 
   @override
   bool operator ==(Object other) =>
       other is Time &&
-      other.hours == hours &&
-      other.mins == mins &&
-      other.secs == secs;
+      other.hour == hour &&
+      other.minute == minute &&
+      other.second == second;
 
   /// Allowed formats `HH:mm:ss` and `HH:mm`
   String format([String format = 'HH:mm:ss']) {
@@ -210,19 +208,19 @@ class Time {
     switch (format) {
       case TimeStringFormat.Hms:
         return [
-          hours.toString(),
-          mins.toString(),
-          secs.toString(),
+          hour.toString(),
+          minute.toString(),
+          second.toString(),
         ].join(':');
       case TimeStringFormat.Hm:
         return [
-          hours.toString(),
-          mins.toString(),
+          hour.toString(),
+          minute.toString(),
         ].join(':');
       case TimeStringFormat.HHmm:
         return [
-          hours.toString().padLeft(2, '0'),
-          mins.toString().padLeft(2, '0'),
+          hour.toString().padLeft(2, '0'),
+          minute.toString().padLeft(2, '0'),
         ].join(':');
       case TimeStringFormat.HHmmss:
       default:
@@ -300,7 +298,7 @@ class Time {
   ///
   Time operator -(Time other) {
     if (other.inSeconds >= inSeconds) {
-      return const Time(0);
+      return const Time(hour: 0);
     }
 
     return Time.fromSeconds(inSeconds - other.inSeconds);
@@ -318,15 +316,15 @@ class Time {
 
   @override
   int get hashCode => hash3(
-        hours.hashCode,
-        mins.hashCode,
-        secs.hashCode,
+        hour.hashCode,
+        minute.hashCode,
+        second.hashCode,
       );
 
   @override
   String toString() => [
-        hours.toString().padLeft(2, '0'),
-        mins.toString().padLeft(2, '0'),
-        secs.toString().padLeft(2, '0'),
+        hour.toString().padLeft(2, '0'),
+        minute.toString().padLeft(2, '0'),
+        second.toString().padLeft(2, '0'),
       ].join(defaultSeparator);
 }

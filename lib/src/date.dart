@@ -14,11 +14,11 @@ class Date {
   final int year;
 
   /// Initialize `Date` object
-  const Date(
-    this.year,
-    this.month,
-    this.day,
-  );
+  const Date({
+    required this.year,
+    this.month = 1,
+    this.day = 1,
+  });
 
   ///
   Date.from(DateTime dt)
@@ -69,8 +69,21 @@ class Date {
     }
   }
 
-  /// Now
-  static Date get now => DateTime.now().date;
+  /// Constructs a [Date] instance with current date in the
+  /// local time zone.
+  ///
+  /// ```dart
+  /// var thisInstant = Date.now();
+  /// ```
+  factory Date.now() => DateTime.now().date;
+
+  /// Constructs a [Date] instance with current date in the
+  /// UTC time zone.
+  ///
+  /// ```dart
+  /// var thisInstant = Date.nowUtc();
+  /// ```
+  factory Date.nowUtc() => DateTime.now().toUtc().date;
 
   /// Today
   factory Date.today() => Date.from(DateTime.now());
@@ -100,13 +113,13 @@ class Date {
   /// Add a [Duration] to this date
   Date add(Duration duration) {
     final t = asUtcDateTime.add(duration);
-    return Date(t.year, t.month, t.day);
+    return Date(year: t.year, month: t.month, day: t.day);
   }
 
   /// Substract a [Duration] to this date
   Date subtract(Duration duration) {
     final t = asUtcDateTime.subtract(duration);
-    return Date(t.year, t.month, t.day);
+    return Date(year: t.year, month: t.month, day: t.day);
   }
 
   /// Add days
@@ -207,10 +220,11 @@ class Date {
   Date get endOfWeekend => startOfWeekend.addDays(1);
 
   // Return the end of the year for this date. The result will be in the local timezone.
-  Date get endOfYear => Date(year, DateTime.december, 1).endOfMonth;
+  Date get endOfYear =>
+      Date(year: year, month: DateTime.december, day: 1).endOfMonth;
 
   /// Return the end of the month for this date. The result will be in the local timezone.
-  Date get endOfMonth => Date(year, month + 1, 1).subDays(1);
+  Date get endOfMonth => Date(year: year, month: month + 1, day: 1).subDays(1);
 
   /// Quarter 1-4
   int get quarter => (month + 2) ~/ 3;
@@ -222,10 +236,11 @@ class Date {
   int get quarterEndMonth => 3 * quarter;
 
   /// Start of quarter
-  Date get startOfQuarter => Date(year, quarterStartMonth, 1);
+  Date get startOfQuarter => Date(year: year, month: quarterStartMonth, day: 1);
 
   /// End of quarter
-  Date get endOfQuarter => Date(year, quarterEndMonth, 1).endOfMonth;
+  Date get endOfQuarter =>
+      Date(year: year, month: quarterEndMonth, day: 1).endOfMonth;
 
   /// Get the week index
   int get getWeek => addDays(1).getISOWeek;
@@ -237,7 +252,7 @@ class Date {
     // If the week number equals zero, it means that the given date belongs to the preceding (week-based) year.
     if (woy == 0) {
       // The 28th of December is always in the last week of the year
-      return Date(year - 1, 12, 28).getISOWeek;
+      return Date(year: year - 1, month: 12, day: 28).getISOWeek;
     }
 
     // If the week number equals 53, one must check that the date is not actually in week 1 of the following year
