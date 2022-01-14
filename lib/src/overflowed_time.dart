@@ -4,15 +4,15 @@ import 'time.dart';
 class OverflowedTime extends Time {
   /// Initialize new `OverflowedTime` instance
   const OverflowedTime({
-    required int hours,
+    required int hour,
     required this.days,
-    int min = 0,
-    int sec = 0,
-  }) : super(hours, mins: min, secs: sec);
+    int minute = 0,
+    int second = 0,
+  }) : super(hour: hour, minute: minute, second: second);
 
   /// Days
   final int days;
 
   @override
-  int get inMins => (days * 24 * 60) + (hours * 60) + mins;
+  int get inMins => (days * 24 * 60) + (hour * 60) + minute;
 }

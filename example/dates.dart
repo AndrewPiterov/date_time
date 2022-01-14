@@ -23,9 +23,20 @@ void main() {
   print('Is time2 after: $isTime2After');
 
   // TimeRange crossing
-  final timeRange = TimeRange(Time.now, Time.now.addHours(6));
-  final timeRange2 = TimeRange(Time.now.addHours(3), Time.now.addHours(9));
+  final timeRange = TimeRange(Time.now(), Time.now().addHours(6));
+  final timeRange2 = TimeRange(Time.now().addHours(3), Time.now().addHours(9));
 
   final isCrossing = timeRange.isCross(timeRange2);
   print('Time ranges are crossing: $isCrossing');
+
+  // String representation
+  final Time? someTime = const Time(hour: 1, minute: 2, second: 3);
+  print(someTime!.toStringWithSeparator('::'));
+
+  // Get [Date] & [Time] from [DateTime]
+  print(DateTime.now().date);
+  print(DateTime.now().time);
+
+  final dateCopyWithYear = Date(year: 2021, month: 3, day: 7);
+  print(dateCopyWithYear.copyWith(year: 2022)); // prints 3/7/2022
 }

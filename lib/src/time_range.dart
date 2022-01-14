@@ -1,5 +1,5 @@
-import 'package:date_time/date_time.dart';
-import 'package:date_time/res/time.dart';
+import 'date_time_error.dart';
+import 'time.dart';
 
 class TimeRange {
   const TimeRange(this.start, this.end);
@@ -14,8 +14,8 @@ class TimeRange {
   }
 
   bool earlyOrSameTime(TimeRange other) {
-    return start.hours < other.start.hours ||
-        (start.hours == other.start.hours && start.mins <= other.start.mins);
+    return start.hour < other.start.hour ||
+        (start.hour == other.start.hour && start.minute <= other.start.minute);
   }
 
   TimeRange upTo(Time end) {

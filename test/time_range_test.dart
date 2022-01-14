@@ -1,5 +1,4 @@
 import 'package:date_time/date_time.dart';
-import 'package:date_time/res/time_range.dart';
 import 'package:given_when_then_unit_test/given_when_then_unit_test.dart';
 import 'package:shouldly/shouldly.dart';
 import 'package:test/scaffolding.dart';
@@ -41,7 +40,7 @@ void main() {
   });
 
   test('Range toString', () {
-    final string = const TimeRange(Time(1), Time(13)).toString();
+    final string = const TimeRange(Time(hour: 1), Time(hour: 13)).toString();
     string.should.be('[01:00:00-13:00:00]');
   });
 }
