@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:date_time/src/extensions.dart';
 import 'package:intl/intl.dart';
 import 'package:quiver/core.dart';
@@ -75,7 +76,7 @@ class Date {
   /// ```dart
   /// var thisInstant = Date.now();
   /// ```
-  factory Date.now() => DateTime.now().date;
+  factory Date.now() => clock.now().date;
 
   /// Constructs a [Date] instance with current date in the
   /// UTC time zone.
@@ -83,10 +84,10 @@ class Date {
   /// ```dart
   /// var thisInstant = Date.nowUtc();
   /// ```
-  factory Date.nowUtc() => DateTime.now().toUtc().date;
+  factory Date.nowUtc() => clock.now().toUtc().date;
 
   /// Today
-  factory Date.today() => Date.from(DateTime.now());
+  factory Date.today() => Date.from(clock.now());
 
   /// Tomorrow
   factory Date.tomorrow() => Date.today().nextDay;

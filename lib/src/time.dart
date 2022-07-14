@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names, prefer_constructors_over_static_methods
 
+import 'package:clock/clock.dart';
 import 'package:date_time/date_time.dart';
 import 'package:quiver/core.dart';
 
@@ -145,7 +146,7 @@ class Time {
 
   /// Now
   static Time now() {
-    final dt = DateTime.now();
+    final dt = clock.now();
     return Time(
       hour: dt.hour,
       minute: dt.minute,
@@ -155,7 +156,7 @@ class Time {
 
   /// UTC Now
   static Time get utcNow {
-    final dt = DateTime.now().toUtc();
+    final dt = clock.now().toUtc();
     return Time(
       hour: dt.hour,
       minute: dt.minute,
