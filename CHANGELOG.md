@@ -1,3 +1,6 @@
+## 0.6.1
+
+* [Add] extension on `DateFormat` to format `Date`
 ## 0.6.0
 
 * **[BREAKING CHANGE]** getters `now` of `Date` and `Time` into method `now()`
