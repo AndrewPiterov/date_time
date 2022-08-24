@@ -4,8 +4,6 @@ import 'package:clock/clock.dart';
 import 'package:date_time/date_time.dart';
 import 'package:quiver/core.dart';
 
-import 'overflowed_time.dart';
-
 /// Format time
 ///
 /// `HHmmss` - 04:55:07
@@ -26,6 +24,15 @@ enum TimeStringFormat {
   Hm,
 }
 
+///
+enum TimeFormatType {
+  ///
+  hourFirst,
+
+  ///
+  millisecondLast,
+}
+
 /// Time object
 ///
 /// `Time(11,30,45)` is 11:30:45
@@ -37,12 +44,15 @@ class Time {
     required this.hour,
     this.minute = 0,
     this.second = 0,
+    this.millisecond = 0,
   })  : assert(hour >= 0),
         assert(hour < 24),
         assert(minute >= 0),
         assert(minute <= 60),
         assert(second >= 0),
-        assert(second <= 60);
+        assert(second <= 60),
+        assert(millisecond >= 0),
+        assert(millisecond <= 999);
 
   ///
   factory Time.from(DateTime dateTime) {
@@ -81,6 +91,9 @@ class Time {
   /// Represents seconds
   final int second;
 
+  /// Represents the milliseconds `[0...999]`.
+  final int millisecond;
+
   /// Represents the `Time` in minutes
   int get inMins => hour * 60 + minute;
 
@@ -105,10 +118,14 @@ class Time {
   ///
   static const defaultSeparator = ':';
 
-  /// Tries to onvert a string to `Time`
+  /// Tries to convert a string to `Time`
   ///
   /// [str] should be separated with `:`, eg: '23:30:21' or `3:17`
-  static Time? fromStr(String? str, {String separator = ':'}) {
+  static Time? fromStr(
+    String? str, {
+    String separator = ':',
+    TimeFormatType formatType = TimeFormatType.hourFirst,
+  }) {
     try {
       if (str == null || str.isEmpty) {
         return null;
@@ -119,11 +136,26 @@ class Time {
         return null;
       }
 
-      final hour = int.parse(arr.first);
-      final minute = int.parse(arr.length > 1 ? arr[1] : '0');
-      final second = int.parse(arr.length > 2 ? arr[2] : '0');
+      if (formatType == TimeFormatType.hourFirst) {
+        final hour = int.parse(arr.first);
+        final minute = int.parse(arr.length > 1 ? arr[1] : '0');
+        final second = int.parse(arr.length > 2 ? arr[2] : '0');
+        final ms = int.parse(arr.length > 3 ? arr[3] : '0');
 
-      return Time(hour: hour, minute: minute, second: second);
+        return Time(
+          hour: hour,
+          minute: minute,
+          second: second,
+          millisecond: ms,
+        );
+      } else {
+        final reversed = arr.reversed.toList();
+        final ms = int.parse(reversed[0]);
+        final s = reversed.length > 1 ? int.parse(reversed[1]) : 0;
+        final m = reversed.length > 2 ? int.parse(reversed[2]) : 0;
+        final h = reversed.length > 3 ? int.parse(reversed[3]) : 0;
+        return Time(hour: h, minute: m, second: s, millisecond: ms);
+      }
     } catch (e) {
       return null;
     }
@@ -346,5 +378,40 @@ class Time {
       minute: minute ?? this.minute,
       second: second ?? this.second,
     );
+  }
+
+  ///
+  int get totalMilliseconds {
+    return hour * 3600000 + minute * 60000 + second * 1000 + millisecond;
+  }
+
+  factory Time.fromMilliseconds(int totalMilliseconds) {
+    final ms = totalMilliseconds % 1000;
+    var seconds = (totalMilliseconds / 1000).floor();
+    var minutes = (seconds / 60).floor();
+    var hours = (minutes / 60).floor();
+
+    seconds = seconds % 60;
+    minutes = minutes % 60;
+
+    // 👇️ If you don't want to roll hours over, e.g. 24 to 00
+    // 👇️ comment (or remove) the line below
+    // commenting next line gets you `24:00:00` instead of `00:00:00`
+    // or `36:15:31` instead of `12:15:31`, etc.
+    hours = hours % 24;
+
+    return Time(hour: hours, minute: minutes, second: seconds, millisecond: ms);
+  }
+
+  factory Time.fromDuration(Duration position) {
+    return Time.fromMilliseconds(position.inMilliseconds);
+  }
+
+  String get title {
+    final hStr = hour.toString().padLeft(2, '0');
+    final mStr = minute.toString().padLeft(2, '0');
+    final sStr = second.toString().padLeft(2, '0');
+    final msStr = millisecond.toString().padLeft(3, '0');
+    return [hStr, mStr, sStr, msStr].join(':');
   }
 }

@@ -1,3 +1,7 @@
+## 0.7.1
+
+* [Add] `milliseconds`
+
 ## 0.6.1
 
 * [Add] extension on `DateFormat` to format `Date`
