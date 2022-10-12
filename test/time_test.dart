@@ -36,12 +36,12 @@ void main() {
 
   test('toString', () {
     const time = Time(hour: 2, minute: 1, second: 7);
-    time.toString().should.be('02:01:07');
+    time.toString().should.be('02:01:07:000');
   });
 
   test('toString with separator', () {
     const time = Time(hour: 2, minute: 1, second: 7);
-    time.toStringWithSeparator('-').should.be('02-01-07');
+    time.toStringWithSeparator('-').should.be('02-01-07-000');
   });
 
   test('as overflowed', () {
@@ -86,63 +86,70 @@ void main() {
         res = time.addHours(5);
       });
 
-      then('type shoulde oveflowed', () {
+      then('type should be overflowed', () {
         res.should.beOfType<OverflowedTime>();
       });
 
-      then('shoulde be oveflowed by 1', () {
+      then('should be overflowed by 1', () {
         (res as OverflowedTime).days.should.be(1);
       });
 
-      then('hours shoudld be corrected', () {
+      then('hours should be corrected', () {
         res.should.be(Time(hour: 1));
       });
     });
   });
 
   given('Time 04:05:07', () {
-    const time = Time(hour: 4, minute: 5, second: 7);
-    when('foramt as `TimeStringFormat.HHmmss`', () {
+    const time = Time(hour: 4, minute: 5, second: 7, millisecond: 123);
+    when('format as `TimeStringFormat.HHmmss`', () {
       then('string should be 04:05:07', () {
         // ignore: avoid_redundant_argument_values
-        time.formatAs(TimeStringFormat.HHmmss).should.be('04:05:07');
+        time.format(TimeStringFormat.HHmmss).should.be('04:05:07');
       });
     });
 
-    when('foramt w/o parameter', () {
-      then('string should be 04:05:07', () {
-        time.format().should.be('04:05:07');
+    when('format as `TimeStringFormat.HHmmssSSS`', () {
+      then('string should be 04:05:07:123', () {
+        // ignore: avoid_redundant_argument_values
+        time.format(TimeStringFormat.HHmmssSSS).should.be('04:05:07:123');
       });
     });
 
-    when('foramt as `TimeStringFormat.HHmm`', () {
+    when('format w/o parameter', () {
+      then('string should be 04:05:07:123', () {
+        time.format().should.be('04:05:07:123');
+      });
+    });
+
+    when('format as `TimeStringFormat.HHmm`', () {
       then('string should be 04:05', () {
-        time.formatAs(TimeStringFormat.HHmm).should.be('04:05');
+        time.format(TimeStringFormat.HHmm).should.be('04:05');
       });
     });
 
-    when('foramt as `TimeStringFormat.Hms`', () {
+    when('format as `TimeStringFormat.Hms`', () {
       then('string should be 4:5:7', () {
-        time.formatAs(TimeStringFormat.Hms).should.be('4:5:7');
+        time.format(TimeStringFormat.Hms).should.be('4:5:7');
       });
     });
 
-    when('foramt as `TimeStringFormat.Hm`', () {
+    when('format as `TimeStringFormat.Hm`', () {
       then('string should be 4:5', () {
         //
-        time.formatAs(TimeStringFormat.Hm).should.be('4:5');
+        time.format(TimeStringFormat.Hm).should.be('4:5');
       });
     });
 
     when('format is HH:mm', () {
       then('description', () {
-        time.format('HH:mm').should.be('04:05');
+        time.format(TimeStringFormat.HHmm).should.be('04:05');
       });
     });
 
     when('format w/o parameter', () {
       then('description', () {
-        time.format().should.be('04:05:07');
+        time.format().should.be('04:05:07:123');
       });
     });
   });
@@ -258,6 +265,11 @@ void main() {
     time.inSeconds.should.be(3920);
   });
 
+  test('Time in milliseconds', () {
+    const time = Time(hour: 1, minute: 5, second: 20, millisecond: 777);
+    time.inMilliseconds.should.be(3920 * 1000 + 777);
+  });
+
   test('Add two times', () {
     const time = Time(hour: 1, minute: 15, second: 13);
     const anotherTime = Time(hour: 1, minute: 5, second: 20);
@@ -282,7 +294,7 @@ void main() {
     res.second.should.be(40);
   });
 
-  test('Add two times with oveflow', () {
+  test('Add two times with overflow', () {
     const time = Time(hour: 20, minute: 30, second: 20);
     const anotherTime = Time(hour: 9, minute: 31, second: 15);
 
@@ -326,7 +338,7 @@ void main() {
     res.second.should.be(0);
   });
 
-  test('Devide time by 2', () {
+  test('Divide time by 2', () {
     const time = Time(hour: 2, minute: 10, second: 20);
 
     final res = time / 2;
@@ -387,7 +399,7 @@ void main() {
     });
   });
 
-  test('non oveflowed time', () {
+  test('non overflowed time', () {
     const time = Time(hour: 23, minute: 59, second: 59);
     final res = time.asOverflowed;
     res.days.should.be(0);

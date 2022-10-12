@@ -95,20 +95,15 @@ class Date {
   /// Tomorrow
   factory Date.yesterday() => Date.today().previousDay;
 
-  ///
   String get withoutSeparator => DateFormat('yyyyMMdd').format(asDateTime);
 
-  ///
   String withSeparator(String separator) =>
       DateFormat('yyyy${separator}MM${separator}dd').format(asDateTime);
 
-  ///
   int get weekday => DateTime(year, month, day).weekday;
 
-  ///
   DateTime get asDateTime => DateTime(year, month, day);
 
-  ///
   DateTime get asUtcDateTime => DateTime.utc(year, month, day);
 
   /// Add a [Duration] to this date
@@ -117,7 +112,7 @@ class Date {
     return Date(year: t.year, month: t.month, day: t.day);
   }
 
-  /// Substract a [Duration] to this date
+  /// Subtract a [Duration] to this date
   Date subtract(Duration duration) {
     final t = asUtcDateTime.subtract(duration);
     return Date(year: t.year, month: t.month, day: t.day);
@@ -138,32 +133,27 @@ class Date {
   /// Add a certain amount of years to this date
   Date addYears(int amount) => setYear(year + amount);
 
-  /// Subtracts an amout of days from this [Date]
+  /// Subtracts an amount of days from this [Date]
   Date subDays(int amount) => addDays(-amount);
 
-  /// Subtracts an amout of months from this [Date]
+  /// Subtracts an amount of months from this [Date]
   Date subMonths(int amount) => addMonths(-amount);
 
   /// Add a certain amount of quarters to this date
   Date subQuarters(int amount) => addQuarters(-amount);
 
   // DateTime subWeeks(amount)
-  /// Subtracts an amout of years from this [Date]
+  /// Subtracts an amount of years from this [Date]
   Date subYears(int amount) => addYears(-amount);
 
-  ///
   Date setYear(int year) => DateTime.utc(year, month, day).date;
 
-  ///
   Date setMonth(int month) => DateTime.utc(year, month, day).date;
 
-  ///
   Date setDay(int day) => DateTime.utc(year, month, day).date;
 
-  ///
   bool isAfter(Date other) => asDateTime.isAfter(other.asDateTime);
 
-  ///
   bool isBefore(Date other) => asDateTime.isBefore(other.asDateTime);
 
   /// Return true if other [isEqual] or [isAfter] to this date
@@ -209,7 +199,7 @@ class Date {
   Date get startOfMonth => setDay(1);
 
   /// Get a [Date] representing start of year of this [Date] in local time.
-  Date get startOfYear => DateTime(year, DateTime.january, 1).date;
+  Date get startOfYear => DateTime(year).date;
 
   /// Return the end of ISO week for this date. The result will be in the local timezone.
   Date get endOfISOWeek => startOfISOWeek.addDays(6);
@@ -220,12 +210,11 @@ class Date {
   /// Get a [Date] representing end of weekend of this [Date] in local time.
   Date get endOfWeekend => startOfWeekend.addDays(1);
 
-  // Return the end of the year for this date. The result will be in the local timezone.
-  Date get endOfYear =>
-      Date(year: year, month: DateTime.december, day: 1).endOfMonth;
+  /// Return the end of the year for this date. The result will be in the local timezone.
+  Date get endOfYear => Date(year: year, month: DateTime.december).endOfMonth;
 
   /// Return the end of the month for this date. The result will be in the local timezone.
-  Date get endOfMonth => Date(year: year, month: month + 1, day: 1).subDays(1);
+  Date get endOfMonth => Date(year: year, month: month + 1).subDays(1);
 
   /// Quarter 1-4
   int get quarter => (month + 2) ~/ 3;
@@ -237,11 +226,10 @@ class Date {
   int get quarterEndMonth => 3 * quarter;
 
   /// Start of quarter
-  Date get startOfQuarter => Date(year: year, month: quarterStartMonth, day: 1);
+  Date get startOfQuarter => Date(year: year, month: quarterStartMonth);
 
   /// End of quarter
-  Date get endOfQuarter =>
-      Date(year: year, month: quarterEndMonth, day: 1).endOfMonth;
+  Date get endOfQuarter => Date(year: year, month: quarterEndMonth).endOfMonth;
 
   /// Get the week index
   int get getWeek => addDays(1).getISOWeek;
@@ -258,7 +246,7 @@ class Date {
 
     // If the week number equals 53, one must check that the date is not actually in week 1 of the following year
     if (woy == 53 &&
-        DateTime(year, 1, 1).weekday != DateTime.thursday &&
+        DateTime(year).weekday != DateTime.thursday &&
         DateTime(year, 12, 31).weekday != DateTime.thursday) {
       return 1;
     }
@@ -354,16 +342,12 @@ class Date {
   bool get isWeekend =>
       weekday == DateTime.saturday || weekday == DateTime.sunday;
 
-  ///
   bool operator >(Date other) => isAfter(other);
 
-  ///
   bool operator >=(Date other) => isSameOrAfter(other);
 
-  ///
   bool operator <(Date other) => isBefore(other);
 
-  ///
   bool operator <=(Date other) => isSameOrBefore(other);
 
   @override
@@ -383,7 +367,6 @@ class Date {
   @override
   String toString() => DateFormat.yMd().format(asDateTime);
 
-  ///
   Date copyWith({int? year, int? month, int? day}) {
     return Date(
       year: year ?? this.year,

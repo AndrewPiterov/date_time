@@ -50,17 +50,17 @@ void main() {
   group('total milliseconds', () {
     test('only ms', () {
       const time = Time(hour: 0, millisecond: 1);
-      expect(time.totalMilliseconds, 1);
+      expect(time.inMilliseconds, 1);
     });
 
     test('with sec', () {
       const time = Time(hour: 0, second: 1, millisecond: 1);
-      expect(time.totalMilliseconds, 1001);
+      expect(time.inMilliseconds, 1001);
     });
 
     test('with min', () {
       const time = Time(hour: 0, minute: 1, second: 1, millisecond: 1);
-      expect(time.totalMilliseconds, 61001);
+      expect(time.inMilliseconds, 61001);
     });
   });
 }

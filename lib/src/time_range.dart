@@ -1,14 +1,18 @@
-import 'date_time_error.dart';
-import 'time.dart';
+import 'package:date_time/src/date_time_error.dart';
+import 'package:date_time/src/time.dart';
 
 class TimeRange {
+  /// Initialize new `TimeRange` instance
   const TimeRange(this.start, this.end);
 
   final Time start;
+
   final Time end;
 
+  /// Get the duration of the range
   int get durationInMinutes => end.inMins - start.inMins;
 
+  /// Check if `TimeRange` is valid
   bool get isValid {
     return end.isAfter(start);
   }
@@ -20,7 +24,7 @@ class TimeRange {
 
   TimeRange upTo(Time end) {
     if (start >= end) {
-      throw DateTimeError('End can\'t be early than Start');
+      throw DateTimeError("End can't be early than Start");
     }
     return TimeRange(start, end);
   }
@@ -31,7 +35,7 @@ class TimeRange {
   }
 
   bool isCross(TimeRange other) {
-    final first = this.start.inMins <= other.start.inMins ? this : other;
+    final first = start.inMins <= other.start.inMins ? this : other;
     final last = first == this ? other : this;
 
     final aGreaterOrEqualC = first.start.inMins <= last.start.inMins;
@@ -40,7 +44,6 @@ class TimeRange {
     return aGreaterOrEqualC && cInsideFirst;
   }
 
-  // @override
   ///
   bool operator >=(TimeRange other) {
     if (other.runtimeType == TimeRange) {
@@ -50,7 +53,6 @@ class TimeRange {
     return false;
   }
 
-  // @override
   ///
   bool operator <=(TimeRange other) {
     if (other.runtimeType == TimeRange) {
@@ -59,21 +61,15 @@ class TimeRange {
     return false;
   }
 
-  // bool operator <(TimeRange other) {
-  //   return start < other.start && end < other.end;
-  // }
-
   @override
   bool operator ==(dynamic other) {
-    if (other.runtimeType == TimeRange) {
+    if (other is TimeRange) {
       return start == other.start && end == other.end;
     }
 
     return false;
   }
 
-  // Override hashCode using strategy from Effective Java,
-  // Chapter 11.
   @override
   int get hashCode {
     int result = 17;
@@ -83,5 +79,5 @@ class TimeRange {
   }
 
   @override
-  String toString() => '[${start}-${end}]';
+  String toString() => '[$start-$end]';
 }

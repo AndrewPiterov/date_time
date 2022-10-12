@@ -40,7 +40,9 @@ void main() {
   });
 
   test('Range toString', () {
-    final string = const TimeRange(Time(hour: 1), Time(hour: 13)).toString();
-    string.should.be('[01:00:00-13:00:00]');
+    final string =
+        const TimeRange(Time(hour: 1), Time(hour: 13, millisecond: 123))
+            .toString();
+    string.should.be('[01:00:00:000-13:00:00:123]');
   });
 }

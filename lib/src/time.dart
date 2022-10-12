@@ -6,30 +6,31 @@ import 'package:quiver/core.dart';
 
 /// Format time
 ///
+/// `HHmmssSSS` - 04:55:07:123
 /// `HHmmss` - 04:55:07
 /// `HHmm` - 04:55
 /// `Hms` - 4:55:7
 /// `Hm` - 4:55
 enum TimeStringFormat {
-  ///
+  /// `HH:mm:ss:SSS` - 04:55:07:123
+  HHmmssSSS,
+
+  /// `HH:mm:ss` - 04:55:07
   HHmmss,
 
-  ///
+  /// `HH:mm` - 04:55
   HHmm,
 
-  ///
+  /// `H:m:s` - 4:5:7
   Hms,
 
-  ///
+  /// `H:m` - 4:5
   Hm,
 }
 
-///
 enum TimeFormatType {
-  ///
   hourFirst,
 
-  ///
   millisecondLast,
 }
 
@@ -66,11 +67,11 @@ class Time {
 
   ///
   factory Time.fromSeconds(int amount) {
-    final isOveflowed = amount >= secondsInDay;
-    if (isOveflowed) {
+    final isOverflowed = amount >= secondsInDay;
+    if (isOverflowed) {
       final days = (amount / secondsInDay).floor();
       final secs = amount % secondsInDay;
-      return Time.fromSeconds(secs).oveflowBy(days);
+      return Time.fromSeconds(secs).overflowBy(days);
     }
 
     const oneHourInSecs = 60 * 60;
@@ -91,14 +92,20 @@ class Time {
   /// Represents seconds
   final int second;
 
-  /// Represents the milliseconds `[0...999]`.
+  /// Represents the milliseconds `[0...999]`
   final int millisecond;
 
-  /// Represents the `Time` in minutes
+  /// Represents the `Time` in minutes or total minutes
   int get inMins => hour * 60 + minute;
 
-  /// Represents the `Time` in seconds
+  /// Represents the `Time` in seconds or total seconds
   int get inSeconds => inMins * 60 + second;
+
+  /// Represents the `Time` in milliseconds or total milliseconds
+  int get inMilliseconds => inSeconds * 1000 + millisecond;
+
+  /// Represents the [Time] in [Duration]
+  Duration get duration => Duration(milliseconds: inMilliseconds);
 
   /// Convert to `OverflowedTime` representation
   OverflowedTime get asOverflowed {
@@ -109,13 +116,13 @@ class Time {
     return OverflowedTime(hour: hour, days: 0, minute: minute, second: second);
   }
 
-  ///
+  /// Total minutes in a day
   static const minutesInDay = 24 * 60;
 
-  ///
+  /// Total seconds in a day
   static const secondsInDay = 24 * 60 * 60;
 
-  ///
+  /// Default separator
   static const defaultSeparator = ':';
 
   /// Tries to convert a string to `Time`
@@ -161,17 +168,17 @@ class Time {
     }
   }
 
-  /// Add hours and may be `Oveflowed`
+  /// Add hours and may be `Overflowed`
   Time addHours(int amount) {
     return addDuration(Duration(hours: amount));
   }
 
-  /// Add minutes and may be `Oveflowed`
+  /// Add minutes and may be `Overflowed`
   Time addMinutes(int amount) {
     return addDuration(Duration(minutes: amount));
   }
 
-  /// Add seconds and may be `Oveflowed`
+  /// Add seconds and may be `Overflowed`
   Time addSeconds(int amount) {
     return addDuration(Duration(seconds: amount));
   }
@@ -216,7 +223,7 @@ class Time {
   }
 
   /// Keep days
-  OverflowedTime oveflowBy(int days) {
+  OverflowedTime overflowBy(int days) {
     return OverflowedTime(
       hour: hour,
       days: days,
@@ -232,22 +239,8 @@ class Time {
       other.minute == minute &&
       other.second == second;
 
-  /// Allowed formats `HH:mm:ss` and `HH:mm`
-  String format([String format = 'HH:mm:ss']) {
-    if (format == 'HH:mm:ss') {
-      // ignore: avoid_redundant_argument_values
-      return formatAs(TimeStringFormat.HHmmss);
-    }
-
-    if (format == 'HH:mm') {
-      return formatAs(TimeStringFormat.HHmm);
-    }
-
-    return toString();
-  }
-
-  /// Allowed formats `HH:mm:ss` and `HH:mm`
-  String formatAs([TimeStringFormat format = TimeStringFormat.HHmmss]) {
+  /// Format the `Time` to `String`
+  String format([TimeStringFormat format = TimeStringFormat.HHmmssSSS]) {
     switch (format) {
       case TimeStringFormat.Hms:
         return [
@@ -266,21 +259,31 @@ class Time {
           minute.toString().padLeft(2, '0'),
         ].join(':');
       case TimeStringFormat.HHmmss:
-      default:
-        return toString();
+        return [
+          hour.toString().padLeft(2, '0'),
+          minute.toString().padLeft(2, '0'),
+          second.toString().padLeft(2, '0'),
+        ].join(':');
+      case TimeStringFormat.HHmmssSSS:
+        return [
+          hour.toString().padLeft(2, '0'),
+          minute.toString().padLeft(2, '0'),
+          second.toString().padLeft(2, '0'),
+          millisecond.toString().padLeft(3, '0'),
+        ].join(':');
     }
   }
 
-  ///
+  /// Get the formatted `String` with the [separator] between each part
   String toStringWithSeparator(String separator) =>
       toString().replaceAll(Time.defaultSeparator, separator);
 
-  ///
+  /// Is the `Time` after another [time]
   bool isAfter(Time time, {bool orSame = false}) {
     return orSame ? this >= time : this > time;
   }
 
-  ///
+  /// Is the `Time` before another [time]
   bool isBefore(Time time, {bool orSame = false}) {
     return orSame ? this <= time : this < time;
   }
@@ -305,40 +308,31 @@ class Time {
     return isClose;
   }
 
-  // @override
-  ///
   bool operator >=(Time other) {
     return inMins >= other.inMins;
   }
 
-  // @override
-  ///
   bool operator <=(Time other) {
     return inMins <= other.inMins;
   }
 
-  ///
   bool operator <(Time other) {
     return inMins < other.inMins;
   }
 
-  ///
   bool operator >(Time other) {
     return inMins > other.inMins;
   }
 
-  ///
   Time operator +(Time other) {
     return Time.fromSeconds(inSeconds + other.inSeconds);
   }
 
-  ///
   Time addDuration(Duration dur) {
     final durationInSeconds = dur.inSeconds;
     return Time.fromSeconds(inSeconds + durationInSeconds);
   }
 
-  ///
   Time operator -(Time other) {
     if (other.inSeconds >= inSeconds) {
       return const Time(hour: 0);
@@ -347,29 +341,25 @@ class Time {
     return Time.fromSeconds(inSeconds - other.inSeconds);
   }
 
-  ///
   Time operator *(num times) {
     return Time.fromSeconds((inSeconds * times).ceil());
   }
 
-  ///
   Time operator /(num times) {
     return Time.fromSeconds((inSeconds / times).floor());
   }
 
   @override
-  int get hashCode => hash3(
+  int get hashCode => hash4(
         hour.hashCode,
         minute.hashCode,
         second.hashCode,
+        millisecond.hashCode,
       );
 
+  /// Represent the time as a `String` in the format `HH:mm:ss`
   @override
-  String toString() => [
-        hour.toString().padLeft(2, '0'),
-        minute.toString().padLeft(2, '0'),
-        second.toString().padLeft(2, '0'),
-      ].join(defaultSeparator);
+  String toString() => format();
 
   ///
   Time copyWith({int? hour, int? minute, int? second}) {
@@ -380,11 +370,7 @@ class Time {
     );
   }
 
-  ///
-  int get totalMilliseconds {
-    return hour * 3600000 + minute * 60000 + second * 1000 + millisecond;
-  }
-
+  /// Create a `Time` from milliseconds
   factory Time.fromMilliseconds(int totalMilliseconds) {
     final ms = totalMilliseconds % 1000;
     var seconds = (totalMilliseconds / 1000).floor();
@@ -403,15 +389,11 @@ class Time {
     return Time(hour: hours, minute: minutes, second: seconds, millisecond: ms);
   }
 
-  factory Time.fromDuration(Duration position) {
-    return Time.fromMilliseconds(position.inMilliseconds);
+  /// Create a `Time` from duration
+  factory Time.fromDuration(Duration duration) {
+    return Time.fromMilliseconds(duration.inMilliseconds);
   }
 
-  String get title {
-    final hStr = hour.toString().padLeft(2, '0');
-    final mStr = minute.toString().padLeft(2, '0');
-    final sStr = second.toString().padLeft(2, '0');
-    final msStr = millisecond.toString().padLeft(3, '0');
-    return [hStr, mStr, sStr, msStr].join(':');
-  }
+  /// Represent the time as a `String` in the format `HH:mm:ss:SSS`
+  String get title => toString();
 }

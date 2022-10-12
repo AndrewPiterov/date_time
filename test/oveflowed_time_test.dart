@@ -5,9 +5,8 @@ import 'package:test/scaffolding.dart';
 
 void main() {
   test('calculate mins', () {
-    const oveflowedTime = OverflowedTime(hour: 1, days: 1);
-
-    oveflowedTime.inMins.should.be(25 * 60);
+    const overflowedTime = OverflowedTime(hour: 1, days: 1);
+    overflowedTime.inMins.should.be(25 * 60);
   });
 
   given('minutes of two days', () {

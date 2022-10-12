@@ -1,3 +1,10 @@
+## 0.8.0
+
+* [Changed] `Time` formatting with `enum`
+* [Changed] `Time` toString now is 'HH:mm:ss:SSS'
+* [Remove]  `totalMilliseconds` use `inMilliseconds` instead
+* [Fix] typos
+
 ## 0.7.1
 
 * [Add] `milliseconds`
