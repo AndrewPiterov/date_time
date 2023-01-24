@@ -83,6 +83,14 @@ class Time {
     return Time(hour: h, minute: m, second: s);
   }
 
+  /// Convert to [DateTime]
+  DateTime get asDateTime => DateTime(1970).copyWith(
+        hour: hour,
+        minute: minute,
+        second: second,
+        millisecond: millisecond,
+      );
+
   /// Represents hours
   final int hour;
 
@@ -278,6 +286,16 @@ class Time {
   String toStringWithSeparator(String separator) =>
       toString().replaceAll(Time.defaultSeparator, separator);
 
+  ///////////////////////////////////// KEY
+
+  /// Convert [Time] to a unique id (using dash, most db system won't accept : as id)
+  String get key => format().replaceAll(':', '-');
+
+  /// Convert a unique id to [Time]
+  static Time? fromKey(String key) => fromStr(key.replaceAll('-', ':'));
+
+  ///////////////////////////////////// COMPARISON
+
   /// Is the `Time` after another [time]
   bool isAfter(Time time, {bool orSame = false}) {
     return orSame ? this >= time : this > time;
@@ -327,6 +345,14 @@ class Time {
   Time operator +(Time other) {
     return Time.fromSeconds(inSeconds + other.inSeconds);
   }
+
+  /// Comparator function used for sorting purpose
+  int compareTo(Time other) => asDateTime.compareTo(other.asDateTime);
+
+  /// Return true if time is within [start] and [end]
+  bool isWithinRange(Time start, Time end) => this >= start && this <= end;
+
+  ///////////////////////////////////// OPERATIONS
 
   Time addDuration(Duration dur) {
     final durationInSeconds = dur.inSeconds;

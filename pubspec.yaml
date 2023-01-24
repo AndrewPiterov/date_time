@@ -4,12 +4,13 @@ version: 0.8.0
 homepage: https://github.com/AndrewPiterov/date_time
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
-  quiver: ^3.1.0
-  intl: ^0.17.0
   clock: ^1.1.0
+  intl: ^0.17.0
+  json_annotation: ^4.8.0
+  quiver: ^3.1.0
 
 dev_dependencies:
   given_when_then_unit_test: ^0.1.0
