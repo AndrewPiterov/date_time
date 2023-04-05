@@ -38,13 +38,15 @@ enum DAY {
 
   /// Returns the day of week title based on locale
   String title([String? locale]) {
-    final dayOfWeek = Week.firstISOWeekOfEpoch.startOfWeek.addDays(number - 1).asDateTime;
+    final dayOfWeek =
+        Week.firstISOWeekOfEpoch.startOfWeek.addDays(number - 1).asDateTime;
     return DateFormat('EEEE', locale).format(dayOfWeek);
   }
 
   /// Return the abbreviation of day - useful for calendar views.
   String shortTitle([String? locale]) {
-    final dayOfWeek = Week.firstISOWeekOfEpoch.startOfWeek.addDays(number - 1).asDateTime;
+    final dayOfWeek =
+        Week.firstISOWeekOfEpoch.startOfWeek.addDays(number - 1).asDateTime;
     return DateFormat('E', locale).format(dayOfWeek);
   }
 
@@ -56,30 +58,22 @@ enum DAY {
 
 /// A convenient class to work with only Week
 class Week {
-  /// A number representing the year this week belongs to
-  // final int year;
-
-  /// A number representing the week (currently only iso week is supported)
-  // final int week;
-
   /// The start of the week, must be sunday or monday
   final Date startOfWeek;
-
-  /// A flag to determine if this week should be treated as iso week (starts monday).
-  /// By default, iso week is used. To change this, pass a false value to the constructor.
-  // final bool iso;
 
   /// Constructs the week
   const Week({required this.startOfWeek});
 
   /// Const value for the first week of epoch that can be used as a default value
-  static const Week firstISOWeekOfEpoch = Week(startOfWeek: Date(year: 1969, month: 12, day: 29));
+  static const Week firstISOWeekOfEpoch =
+      Week(startOfWeek: Date(year: 1969, month: 12, day: 29));
 
   /// Const value for the first week of year 1 that can be used as a default value
   static const Week firstISOWeekOfTime = Week(startOfWeek: Date.startOfTime);
 
   /// Const value to signify the end of time that can be used as a default value
-  static const Week lastISOWeekOfTime = Week(startOfWeek: Date(year: 9999, month: 12, day: 27));
+  static const Week lastISOWeekOfTime =
+      Week(startOfWeek: Date(year: 9999, month: 12, day: 27));
 
   ///////////////////////////////////// FACTORIES
 
@@ -105,7 +99,8 @@ class Week {
 
   /// When [iso] is true of absent, will return the current week starting on Monday
   /// When false, will return the current week starting on Sunday
-  factory Week.now({bool iso = true}) => iso ? Week.isoWeek(Date.now()) : Week.week(Date.now());
+  factory Week.now({bool iso = true}) =>
+      iso ? Week.isoWeek(Date.now()) : Week.week(Date.now());
 
   /// Same as [Week.now]
   factory Week.thisWeek({bool iso = true}) => Week.now(iso: iso);
@@ -188,13 +183,15 @@ class Week {
   int difference(Week other) => startOfWeek.difference(other.startOfWeek);
 
   /// Add a certain amount of weeks to this week
-  Week addWeeks(int amount) => Week.startWeek(startOfWeek.addWeeks(amount.abs()));
+  Week addWeeks(int amount) =>
+      Week.startWeek(startOfWeek.addWeeks(amount.abs()));
 
   /// Add a certain amount of years to this week
   Week addYears(int amount) => addWeeks(52);
 
   /// Subtracts an amount of months from this week
-  Week subWeeks(int amount) => Week.startWeek(startOfWeek.subWeeks(amount.abs()));
+  Week subWeeks(int amount) =>
+      Week.startWeek(startOfWeek.subWeeks(amount.abs()));
 
   /// Subtracts an amount of years from this [Date]
   Week subYears(int amount) => subWeeks(52);
@@ -208,10 +205,12 @@ class Week {
   bool isBefore(Week other) => startOfWeek.isBefore(other.startOfWeek);
 
   /// Return true if other [isEqual] or [isAfter] to this date
-  bool isSameOrAfter(Week other) => startOfWeek.isSameOrAfter(other.startOfWeek);
+  bool isSameOrAfter(Week other) =>
+      startOfWeek.isSameOrAfter(other.startOfWeek);
 
   /// Return true if other [isEqual] or [isBefore] to this date
-  bool isSameOrBefore(Week other) => startOfWeek.isSameOrBefore(other.startOfWeek);
+  bool isSameOrBefore(Week other) =>
+      startOfWeek.isSameOrBefore(other.startOfWeek);
 
   /// Return true if week is this week
   bool get isThisWeek => this == Week.thisWeek();
@@ -237,7 +236,8 @@ class Week {
   ///////////////////////////////////// OBJECT OVERRIDES
 
   @override
-  bool operator ==(Object other) => other is Week && other.startOfWeek == startOfWeek;
+  bool operator ==(Object other) =>
+      other is Week && other.startOfWeek == startOfWeek;
 
   @override
   int get hashCode => startOfWeek.hashCode;
@@ -273,7 +273,9 @@ class Week {
     bool iso = true,
   }) {
     if (format == null || format == '') {
-      return iso ? DateTime.parse(dateStr).isoWeek : DateTime.parse(dateStr).week;
+      return iso
+          ? DateTime.parse(dateStr).isoWeek
+          : DateTime.parse(dateStr).week;
     }
 
     final formatter = DateFormat(format);

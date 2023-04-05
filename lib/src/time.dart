@@ -84,7 +84,15 @@ class Time {
   }
 
   /// Convert to [DateTime]
-  DateTime get asDateTime => DateTime(1970).copyWith(
+  DateTime get asDateTime => DateTime.fromMillisecondsSinceEpoch(0).copyWith(
+        hour: hour,
+        minute: minute,
+        second: second,
+        millisecond: millisecond,
+      );
+
+  /// Convert to [DateTime] with the given [date]
+  DateTime withDate(Date date) => date.asDateTime.copyWith(
         hour: hour,
         minute: minute,
         second: second,

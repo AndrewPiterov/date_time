@@ -64,6 +64,20 @@ void main() {
       thisYear.isBefore(nextYear).should.beTrue();
       thisYear.isSameOrBefore(nextYear).should.beTrue();
     });
+
+    test('Test bool for this, last and next year', () {
+      lastYear.isLastYear.should.beTrue();
+      lastYear.isThisYear.should.beFalse();
+      lastYear.isNextYear.should.beFalse();
+
+      thisYear.isLastYear.should.beFalse();
+      thisYear.isThisYear.should.beTrue();
+      thisYear.isNextYear.should.beFalse();
+
+      nextYear.isLastYear.should.beFalse();
+      nextYear.isThisYear.should.beFalse();
+      nextYear.isNextYear.should.beTrue();
+    });
   });
 
   group('Testing start and end of year', () {

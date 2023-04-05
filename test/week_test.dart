@@ -25,6 +25,16 @@ void main() {
   final sunday2 = Date(year: 2023, month: 1, day: 8);
 
   group('Testing week comparison methods', () {
+    test('equals', () {
+      (thisWeek == Week.thisWeek()).should.beTrue();
+      (lastWeek == Week.lastWeek()).should.beTrue();
+      (nextWeek == Week.nextWeek()).should.beTrue();
+      (thisWeek == nextWeek).should.beFalse();
+      (thisWeek.hashCode == nextWeek.hashCode).should.beFalse();
+      (thisWeek != nextWeek).should.beTrue();
+      (thisWeek.hashCode != nextWeek.hashCode).should.beTrue();
+    });
+
     test('Compare this week and itself (now)', () {
       (thisWeek == now).should.beTrue();
       (thisWeek > now).should.beFalse();
@@ -78,6 +88,20 @@ void main() {
       thisWeek.isSameOrAfter(nextWeek).should.beFalse();
       thisWeek.isBefore(nextWeek).should.beTrue();
       thisWeek.isSameOrBefore(nextWeek).should.beTrue();
+    });
+
+    test('boolean flags', () {
+      lastWeek.isThisWeek.should.beFalse();
+      lastWeek.isLastWeek.should.beTrue();
+      lastWeek.isNextWeek.should.beFalse();
+
+      thisWeek.isThisWeek.should.beTrue();
+      thisWeek.isLastWeek.should.beFalse();
+      thisWeek.isNextWeek.should.beFalse();
+
+      nextWeek.isThisWeek.should.beFalse();
+      nextWeek.isLastWeek.should.beFalse();
+      nextWeek.isNextWeek.should.beTrue();
     });
   });
 
@@ -340,6 +364,36 @@ void main() {
           .copyWith(startOfWeek: Date(year: 2022, month: 1, day: 1))
           .should
           .be(Week(startOfWeek: Date(year: 2022, month: 1, day: 1)));
+    });
+  });
+
+  group('next / previous', () {
+    final week = Week(startOfWeek: Date(year: 2022, month: 1, day: 1));
+    test('test next', () {
+      week.next.should
+          .be(Week(startOfWeek: Date(year: 2022, month: 1, day: 8)));
+    });
+
+    test('test previous', () {
+      Week(startOfWeek: Date(year: 2022, month: 1, day: 8))
+          .previous
+          .should
+          .be(week);
+    });
+  });
+
+  group('convenient methods', () {
+    final week = Week.startDateTime(DateTime(2023, 1, 2));
+    test('test isISOWeek', () {
+      week.isISOWeek.should.be(true);
+    });
+
+    test('test startDay', () {
+      week.startDay.should.be(DAY.monday);
+    });
+
+    test('test endDay', () {
+      week.endDay.should.be(DAY.sunday);
     });
   });
 }

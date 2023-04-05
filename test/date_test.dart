@@ -698,4 +698,56 @@ void main() {
       date.copyWith(day: 13).should.be(Date(year: 2022, month: 5, day: 13));
     });
   });
+
+  group('convenience methods', () {
+    const start = Date(year: 2023, month: 1, day: 1);
+    const end = Date(year: 2023, month: 1, day: 10);
+    const outsideDate = Date(year: 2023, month: 1, day: 11);
+
+    test('difference', () {
+      start.difference(end).should.be(-9);
+      end.difference(start).should.be(9);
+    });
+
+    test('startOfDay', () {
+      start.startOfDay.should.be(DateTime(2023, 1, 1).startOfDay);
+    });
+
+    test('endOfDay', () {
+      start.endOfDay.should.be(DateTime(2023, 1, 1).endOfDay);
+    });
+
+    test('compareTo', () {
+      start.compareTo(start).should.be(0);
+      start.compareTo(end).should.be(-1);
+      end.compareTo(start).should.be(1);
+    });
+
+    test('isWithinRange', () {
+      start.isWithinRange(start, end).should.be(true);
+      outsideDate.isWithinRange(start, end).should.be(false);
+    });
+
+    test('isOutsideRange', () {
+      start.isOutsideRange(start, end).should.be(false);
+      outsideDate.isOutsideRange(start, end).should.be(true);
+    });
+
+    test('getWeek, getMONTH', () {
+      // objects
+      start.week.should.be(Week(startOfWeek: start.startOfWeek));
+      start.isoWeek.should.be(Week(startOfWeek: start.startOfISOWeek));
+      start.getMonth.should.be(Month(year: 2023, month: 1));
+      start.getYear.should.be(Year(2023));
+
+      // enums
+      start.getDAY.should.be(DAY.sunday);
+      start.getMONTH.should.be(MONTH.january);
+    });
+
+    test('key parse', () {
+      start.key.should.be('2023-01-01');
+      Date.fromKey('2023-01-01').should.be(start);
+    });
+  });
 }

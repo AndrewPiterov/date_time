@@ -1,4 +1,5 @@
 import 'package:date_time/src/date.dart';
+import 'package:date_time/src/date_time_range.dart';
 import 'package:date_time/src/month.dart';
 import 'package:date_time/src/time.dart';
 import 'package:date_time/src/week.dart';
@@ -75,7 +76,7 @@ extension DateTimeExtensions on DateTime {
       return year + 1;
     }
 
-    return woy;
+    return year;
   }
 
   int get _ordinalDate {
@@ -98,6 +99,12 @@ extension DateTimeExtensions on DateTime {
   /// Check if the date is out side [start] and [end]
   bool isOutsideRange(DateTime start, DateTime end) =>
       !isWithinRange(start, end);
+
+  /// Check if the date is within [range]
+  bool isWithin(DateTimeRange range) => isWithinRange(range.start, range.end);
+
+  /// Check if the date is out side [range]
+  bool isOutside(DateTimeRange range) => !isWithin(range);
 
   /// Check if a date is [equals] to other
   bool isEqual(DateTime other) => this == other;
@@ -131,36 +138,41 @@ extension DateTimeExtensions on DateTime {
   /// Add a certain amount of days to this date
   DateTime addDays(int amount, {bool ignoreDaylightSavings = false}) =>
       ignoreDaylightSavings
-          ? DateTime(year, month, day + amount, hour, minute, second,
-              millisecond, microsecond)
+          ? copyWith(day: day + amount)
           : add(Duration(days: amount));
 
   /// Add a certain amount of hours to this date
   DateTime addHours(int amount, {bool ignoreDaylightSavings = false}) =>
       ignoreDaylightSavings
-          ? DateTime(year, month, day, hour + amount, minute, second,
-              millisecond, microsecond)
+          ? copyWith(hour: hour + amount)
           : add(Duration(hours: amount));
 
   /// Add a certain amount of minutes to this date
   DateTime addMinutes(int amount, {bool ignoreDaylightSavings = false}) =>
       ignoreDaylightSavings
-          ? DateTime(year, month, day, hour, minute + amount, second,
-              millisecond, microsecond)
+          ? copyWith(minute: minute + amount)
           : add(Duration(minutes: amount));
-
-  /// Add a certain amount of milliseconds to this date
-  DateTime addMilliseconds(int amount) => add(Duration(milliseconds: amount));
-
-  /// Add a certain amount of microseconds to this date
-  DateTime addMicroseconds(int amount) => add(Duration(microseconds: amount));
 
   /// Add a certain amount of seconds to this date
   DateTime addSeconds(int amount, {bool ignoreDaylightSavings = false}) =>
       ignoreDaylightSavings
-          ? DateTime(year, month, day, hour, minute, second + amount,
-              millisecond, microsecond)
+          ? copyWith(second: second + amount)
           : add(Duration(seconds: amount));
+
+  /// Add a certain amount of milliseconds to this date
+  DateTime addMilliseconds(int amount, {bool ignoreDaylightSavings = false}) =>
+      ignoreDaylightSavings
+          ? copyWith(millisecond: millisecond + amount)
+          : add(Duration(milliseconds: amount));
+
+  /// Add a certain amount of microseconds to this date
+  DateTime addMicroseconds(int amount, {bool ignoreDaylightSavings = false}) =>
+      ignoreDaylightSavings
+          ? copyWith(microsecond: microsecond + amount)
+          : add(Duration(microseconds: amount));
+
+  /// Add a certain amount of weeks to this date
+  DateTime addWeeks(int amount) => addDays(amount * 7);
 
   /// Add a certain amount of months to this date
   DateTime addMonths(int amount) => copyWith(month: month + amount);
@@ -168,47 +180,35 @@ extension DateTimeExtensions on DateTime {
   /// Add a certain amount of quarters to this date
   DateTime addQuarters(int amount) => addMonths(amount * 3);
 
-  /// Add a certain amount of weeks to this date
-  DateTime addWeeks(int amount) => addDays(amount * 7);
-
   /// Add a certain amount of years to this date
   DateTime addYears(int amount) => copyWith(year: year + amount);
 
   /// Subtract a certain amount of days from this date
   DateTime subDays(int amount, {bool ignoreDaylightSavings = false}) =>
-      ignoreDaylightSavings
-          ? DateTime(year, month, day - amount, hour, minute, second,
-              millisecond, microsecond)
-          : subtract(Duration(days: amount));
+      addDays(-amount, ignoreDaylightSavings: ignoreDaylightSavings);
 
   /// Subtract a certain amount of hours from this date
   DateTime subHours(int amount, {bool ignoreDaylightSavings = false}) =>
-      ignoreDaylightSavings
-          ? DateTime(year, month, day, hour - amount, minute, second,
-              millisecond, microsecond)
-          : subtract(Duration(hours: amount));
+      addHours(-amount, ignoreDaylightSavings: ignoreDaylightSavings);
 
   /// Subtract a certain amount of minutes from this date
   DateTime subMinutes(int amount, {bool ignoreDaylightSavings = false}) =>
-      ignoreDaylightSavings
-          ? DateTime(year, month, day, hour, minute - amount, second,
-              millisecond, microsecond)
-          : subtract(Duration(minutes: amount));
-
-  /// Subtract a certain amount of milliseconds to this date
-  DateTime subMilliseconds(int amount) =>
-      subtract(Duration(milliseconds: amount));
-
-  /// Subtract a certain amount of microseconds from this date
-  DateTime subMicroseconds(int amount) =>
-      subtract(Duration(microseconds: amount));
+      addMinutes(-amount, ignoreDaylightSavings: ignoreDaylightSavings);
 
   /// Subtract a certain amount of seconds from this date
   DateTime subSeconds(int amount, {bool ignoreDaylightSavings = false}) =>
-      ignoreDaylightSavings
-          ? DateTime(year, month, day, hour, minute, second - amount,
-              millisecond, microsecond)
-          : subtract(Duration(seconds: amount));
+      addSeconds(-amount, ignoreDaylightSavings: ignoreDaylightSavings);
+
+  /// Subtract a certain amount of milliseconds to this date
+  DateTime subMilliseconds(int amount, {bool ignoreDaylightSavings = false}) =>
+      addMilliseconds(-amount, ignoreDaylightSavings: ignoreDaylightSavings);
+
+  /// Subtract a certain amount of microseconds from this date
+  DateTime subMicroseconds(int amount, {bool ignoreDaylightSavings = false}) =>
+      addMicroseconds(-amount, ignoreDaylightSavings: ignoreDaylightSavings);
+
+  /// Subtract a certain amount of weeks from this date
+  DateTime subWeeks(int amount) => addDays(-amount * 7);
 
   /// Subtract a certain amount of months from this date
   DateTime subMonths(int amount) => copyWith(month: month - amount);
@@ -216,19 +216,8 @@ extension DateTimeExtensions on DateTime {
   /// Subtract a certain amount of quarters from this date
   DateTime subQuarters(int amount) => addMonths(-amount * 3);
 
-  /// Subtract a certain amount of weeks from this date
-  DateTime subWeeks(int amount) => addDays(-amount * 7);
-
   /// Subtract a certain amount of years from this date
   DateTime subYears(int amount) => copyWith(year: year - amount);
-
-  ///////////////////////////////////// KEY
-
-  /// Convert [DateTime] to a unique id
-  String get key => toIso8601String();
-
-  /// Convert a unique id to [DateTime]
-  static DateTime? fromKey(String key) => DateTime.tryParse(key);
 
   /// Short-hand to DateFormat
   String format([String? pattern, String? locale]) {
@@ -241,7 +230,12 @@ extension DateTimeExtensions on DateTime {
 
   /// Return the end of a day for this date. The result will be in the local timezone.
   DateTime get endOfDay => copyWith(
-      hour: 23, minute: 59, second: 59, millisecond: 999, microsecond: 999);
+        hour: 23,
+        minute: 59,
+        second: 59,
+        millisecond: 999,
+        microsecond: 999,
+      );
 
   /// Convenient copy with method
   DateTime copyWith({
@@ -254,27 +248,29 @@ extension DateTimeExtensions on DateTime {
     int? millisecond,
     int? microsecond,
   }) {
-    return isUtc
-        ? DateTime.utc(
-            year ?? this.year,
-            month ?? this.month,
-            day ?? this.day,
-            hour ?? this.hour,
-            minute ?? this.minute,
-            second ?? this.second,
-            millisecond ?? this.millisecond,
-            microsecond ?? this.microsecond,
-          )
-        : DateTime(
-            year ?? this.year,
-            month ?? this.month,
-            day ?? this.day,
-            hour ?? this.hour,
-            minute ?? this.minute,
-            second ?? this.second,
-            millisecond ?? this.millisecond,
-            microsecond ?? this.microsecond,
-          );
+    if (isUtc) {
+      return DateTime.utc(
+        year ?? this.year,
+        month ?? this.month,
+        day ?? this.day,
+        hour ?? this.hour,
+        minute ?? this.minute,
+        second ?? this.second,
+        millisecond ?? this.millisecond,
+        microsecond ?? this.microsecond,
+      );
+    } else {
+      return DateTime(
+        year ?? this.year,
+        month ?? this.month,
+        day ?? this.day,
+        hour ?? this.hour,
+        minute ?? this.minute,
+        second ?? this.second,
+        millisecond ?? this.millisecond,
+        microsecond ?? this.microsecond,
+      );
+    }
   }
 }
 
