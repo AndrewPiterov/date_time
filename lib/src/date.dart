@@ -1,5 +1,8 @@
 import 'package:clock/clock.dart';
 import 'package:date_time/src/extensions.dart';
+import 'package:date_time/src/month.dart';
+import 'package:date_time/src/week.dart';
+import 'package:date_time/src/year.dart';
 import 'package:intl/intl.dart';
 import 'package:quiver/core.dart';
 
@@ -106,6 +109,11 @@ class Date {
 
   DateTime get asUtcDateTime => DateTime.utc(year, month, day);
 
+  ///////////////////////////////////// OPERATIONS
+
+  /// Return the difference in days
+  int difference(Date other) => asDateTime.difference(other.asDateTime).inDays;
+
   /// Add a [Duration] to this date
   Date add(Duration duration) {
     final t = asUtcDateTime.add(duration);
@@ -142,7 +150,9 @@ class Date {
   /// Add a certain amount of quarters to this date
   Date subQuarters(int amount) => addQuarters(-amount);
 
-  // DateTime subWeeks(amount)
+  /// Subtracts an amount of weeks from this [Date]
+  Date subWeeks(int amount) => subDays(amount * 7);
+
   /// Subtracts an amount of years from this [Date]
   Date subYears(int amount) => addYears(-amount);
 
@@ -254,6 +264,29 @@ class Date {
     return woy;
   }
 
+  /// Returns the year of this [Date]'s week
+  int get yearOfWeek => addDays(1).yearOfISOWeek;
+
+  /// Returns the year for this [Date] ISO week
+  int get yearOfISOWeek {
+    final woy = (_ordinalDate - weekday + 10) ~/ 7;
+
+    // If the week number equals zero, it means that the given date belongs to the preceding (week-based) year.
+    if (woy == 0) {
+      // The 28th of December is always in the last week of the year
+      return year - 1;
+    }
+
+    // If the week number equals 53, one must check that the date is not actually in week 1 of the following year
+    if (woy == 53 &&
+        DateTime(year).weekday != DateTime.thursday &&
+        DateTime(year, 12, 31).weekday != DateTime.thursday) {
+      return year + 1;
+    }
+
+    return year;
+  }
+
   int get _ordinalDate {
     const offsets = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
     return offsets[month - 1] + day + (isLeapYear && month > 2 ? 1 : 0);
@@ -295,6 +328,22 @@ class Date {
 
   /// Return true if this date [isBefore] [Date.now]
   bool get isPast => isBefore(Date.today());
+
+  /// Return the start of day in [DateTime]
+  DateTime get startOfDay => asDateTime.startOfDay;
+
+  /// Return the end of day in [DateTime]
+  DateTime get endOfDay => asDateTime.endOfDay;
+
+  ///////////////////////////////////// COMPARISON
+
+  int compareTo(Date other) => asDateTime.compareTo(other.asDateTime);
+
+  /// Check if the date is within [start] and [end]
+  bool isWithinRange(Date start, Date end) => this >= start && this <= end;
+
+  /// Check if the date is out side [start] and [end]
+  bool isOutsideRange(Date start, Date end) => !isWithinRange(start, end);
 
   /// Check if this date is in the same day than other
   bool isSameDay(Date other) => this == other;
@@ -342,12 +391,16 @@ class Date {
   bool get isWeekend =>
       weekday == DateTime.saturday || weekday == DateTime.sunday;
 
+  /// Greater than
   bool operator >(Date other) => isAfter(other);
 
+  /// Greater than or equal
   bool operator >=(Date other) => isSameOrAfter(other);
 
+  /// Less than
   bool operator <(Date other) => isBefore(other);
 
+  /// Less than or equal
   bool operator <=(Date other) => isSameOrBefore(other);
 
   @override
@@ -374,4 +427,44 @@ class Date {
       day: day ?? this.day,
     );
   }
+
+  /// Convenient method to [DateFormat]
+  String format([String pattern = 'yMd', String? locale]) {
+    return DateFormat(pattern, locale).format(asDateTime);
+  }
+
+  /// Return enum value of day of week
+  DAY get getDAY => DAY.fromNumber(weekday);
+
+  /// Return a non iso [Week] object for this date
+  Week get week => Week.week(this);
+
+  /// Return the iso [Week] object for this date
+  Week get isoWeek => Week.isoWeek(this);
+
+  /// Return the [Month] object for this date.
+  Month get getMonth => Month.fromDate(this);
+
+  /// Get the enum value of month
+  MONTH get getMONTH => MONTH.fromNumber(month);
+
+  /// Return the [Year] object for this date.
+  Year get getYear => Year.fromDate(this);
+
+  /// Const value to signify the start of epoch that can be used as a default value
+  static const Date epoch = Date(year: 1970);
+
+  /// Const value to signify the start of time that can be used as a default value
+  static const Date startOfTime = Date(year: 1);
+
+  /// Const value to signify the end of time that can be used as a default value
+  static const Date endOfTime = Date(year: 9999, month: 12, day: 31);
+
+  ///////////////////////////////////// KEY
+
+  /// Convert [Date] to a unique id
+  String get key => format('yyyy-MM-dd');
+
+  /// Convert a unique id to [Date]
+  static Date? fromKey(String key) => tryParse(key, format: 'yyyy-MM-dd');
 }

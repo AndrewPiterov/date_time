@@ -38,5 +38,6 @@ void main() {
     );
 
     dateRange2.should.be(dateRange1);
+    dateRange2.hashCode.should.be(dateRange1.hashCode);
   });
 }

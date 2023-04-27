@@ -8,8 +8,16 @@ void main() {
   test('compare time', () {
     const time = Time(hour: 21, minute: 01);
     const time2 = Time(hour: 21, minute: 01);
-
     time.should.be(time2);
+  });
+
+  test('compareTo', () {
+    const time1 = Time(hour: 21, minute: 01);
+    const time2 = Time(hour: 21, minute: 01);
+    const time3 = Time(hour: 22, minute: 01);
+    time1.compareTo(time2).should.be(0);
+    time1.compareTo(time3).should.be(-1);
+    time3.compareTo(time1).should.be(1);
   });
 
   test('compare with `isAfter`', () {
@@ -183,8 +191,15 @@ void main() {
     const time = Time(hour: 1);
     const time1 = Time(hour: 1);
     const time2 = Time(hour: 2);
+
+    test('equal', () {
+      (time == time1).should.beTrue();
+      (time.hashCode == time1.hashCode).should.beTrue();
+    });
+
     test('not equal', () {
       (time != time2).should.beTrue();
+      (time.hashCode != time2.hashCode).should.beTrue();
     });
 
     test('before', () {
@@ -437,5 +452,38 @@ void main() {
     test('HH:mm:ss', () {
       Time.fromStr('20:33:7').should.be(Time(hour: 20, minute: 33, second: 7));
     });
+  });
+
+  group('database key', () {
+    test('to key', () {
+      Time(hour: 20, minute: 33).key.should.be('20-33-00-000');
+    });
+
+    test('from key', () {
+      Time.fromKey('20-33-07').should.be(Time(hour: 20, minute: 33, second: 7));
+    });
+  });
+
+  test('isWithinRange', () {
+    const start = Time(hour: 5);
+    const end = Time(hour: 10);
+    const outsideHour = Time(hour: 12);
+    start.isWithinRange(start, end).should.be(true);
+    outsideHour.isWithinRange(start, end).should.be(false);
+  });
+
+  test('asDateTime', () {
+    Time(hour: 5).asDateTime.should.be(DateTime(1970).copyWith(hour: 5));
+  });
+
+  test('withDate', () {
+    Time(hour: 5)
+        .withDate(Date(year: 2023))
+        .should
+        .be(DateTime(2023).copyWith(hour: 5));
+  });
+
+  test('duration', () {
+    Time(hour: 5).duration.should.be(Duration(hours: 5));
   });
 }
