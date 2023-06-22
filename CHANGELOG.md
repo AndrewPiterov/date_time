@@ -1,3 +1,12 @@
+## 0.10.0
+
+- [Update] dependencies
+
+## 0.9.0
+
+- [Add] Time.zero
+- [Update] dependencies
+
 ## 0.8.0
 
 * [Changed] `Time` formatting with `enum`
