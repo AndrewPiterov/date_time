@@ -1,3 +1,11 @@
+## 0.11.0
+
+- [Update] dependencies
+- `sdk: ">=3.1.3 <4.0.0"`
+- `intl: ^0.19.0`
+- `json_annotation: ^4.9.0`
+
+
 ## 0.10.0
 
 - [Update] dependencies
