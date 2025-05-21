@@ -1,3 +1,6 @@
+## 0.12.0
+- [Upgrade] intl to ^0.20.0
+
 ## 0.11.0
 
 - [Update] dependencies

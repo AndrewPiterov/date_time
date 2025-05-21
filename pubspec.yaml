@@ -1,6 +1,6 @@
 name: date_time
 description: Package to work with Date & Time in separation and with its Ranges.
-version: 0.11.0
+version: 0.12.0
 homepage: https://github.com/AndrewPiterov/date_time
 
 environment:
@@ -8,7 +8,7 @@ environment:
 
 dependencies:
   clock: ^1.1.1
-  intl: ^0.19.0
+  intl: ^0.20.2
   json_annotation: ^4.9.0
   quiver: ^3.2.1
 
